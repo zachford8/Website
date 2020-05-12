@@ -12,7 +12,7 @@ theme = "hugo-sustain"
 
 [params]
   avatar = "profilepic.jpeg"
-  author = "Zach Ford"
+  author = "Zachary Ford"
   description = "Describe your website"
 
   # Custom assets can be linked with their paths relative to static/
