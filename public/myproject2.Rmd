@@ -1,5 +1,5 @@
 ---
-title: 'SDS348 - Project 2: Modeling, Testing, and Predicting'
+title: 'Project 2: Modeling, Testing, and Predicting'
 author: "Zach Ford"
 date: ''
 output:
@@ -68,10 +68,10 @@ class_diag<-function(probs,truth){
 
 # 0. Introduction
 
->The dataset that I am using for this project contains data on different shots that were taken during different games of the 2014-2015 NBA season. I found this dataset on `www.kaggle.com`. Some notable variables within the dataset are `winorlose`, which determines if the game was won-`W` or lost-`L`. `shot_number` is current number of shots that a player has taken in that specific game. Another variable is `dribbles`, which is the amount of dribbles the player took before the shot. `touch_time` is the amount of time the player possessed the ball before taking the shot. `shot_dist` is the distance from the rim in feet from where the player took the shot. `pts_type` is whether the shot taken by the player was a two-`2` or three-`3` point shot, which is also under the variable `pts`. `shot_result` is whether the player `made` or `missed` the shot, this variable is also in binary form under the variable `fgm` with `1` = `made` and `0` = `missed`. `clost_def_dist` is how close the defender was to the player who attemped the shot in feet. The last notable variable is the `closeest_defender` and `player_name` which are the names of the closest defender as well as the player who took the shot, respectively. To tidy the dataset, I removed all rows that contained an `NA` value as these would not contribute the following statistical tests that I am going to run in this project, I then made all column names lowercase for ease, and I renamed the `w` column to `winorlose` for clairity. Moreover, I also took away `CLOSEST_DEFENDER_PLAYER_ID` and `player_id` which are just redundant variables. I also decieded to add in `totpts` which is just the total points for a specific player within a specific game. Following the tidying, I have a total of 122,502 rows with 20 columns. 
+>The dataset that I am using for this project contains data on different shots that were taken during different games of the 2014-2015 NBA season. I found this dataset on www.kaggle.com. Some notable variables within the dataset are winorlose, which determines if the game was won-W or lost-L. shot_number is current number of shots that a player has taken in that specific game. Another variable is dribbles, which is the amount of dribbles the player took before the shot. touch_time is the amount of time the player possessed the ball before taking the shot. shot_dist is the distance from the rim in feet from where the player took the shot. pts_type is whether the shot taken by the player was a two-2 or three-3 point shot, which is also under the variable pts. shot_result is whether the player made or missed the shot, this variable is also in binary form under the variable fgm with 1 = made and 0 = missed. clost_def_dist is how close the defender was to the player who attemped the shot in feet. The last notable variable is the closeest_defender and player_name which are the names of the closest defender as well as the player who took the shot, respectively. To tidy the dataset, I removed all rows that contained an NA value as these would not contribute the following statistical tests that I am going to run in this project, I then made all column names lowercase for ease, and I renamed the w column to winorlose for clairity. Moreover, I also took away CLOSEST_DEFENDER_PLAYER_ID and player_id which are just redundant variables. I also decieded to add in totpts which is just the total points for a specific player within a specific game. Following the tidying, I have a total of 122,502 rows with 20 columns. 
 
 ```{R}
-shot_logs<-readr::read_csv("/Users/zachford/Documents/My Website/content/project2data.csv")
+shot_logs<-readr::read_csv("/Users/zachford/Documents/My_Website/content/project2data.csv")
 #Tidying
 shotdat<-shot_logs%>%
   select(-CLOSEST_DEFENDER_PLAYER_ID,-player_id)%>%
@@ -86,7 +86,7 @@ head(shotdat)
 
 # 1. MANOVA/ANOVA
 
->The MANOVA I decied to run was testing whether `shot number`, `shot clock`, `dribbles`, `touch time`, `shot distance`, and `closest defender distance` means differed across if the shot was a `two` or `three` -pointer. Since the MANOVA was significant, I performed one-way ANOVAs for each each variable to see which ones are significant. However, since my categorical variable is binary, the post-hoc t tests are unnecessary since the significance can be inferred from the one-way ANOVAs. Therefore, the bonferroni correction I used to determined significance is 0.007 because I performed 1 MANOVA and 6 ANOVAs, which is 7 total tests. Using the bonferroni correction, I would infer that `shot clock`, `dribbles`, `touch time`, `shot distance`, and `closest defender distance` are significant with a p-value of <2.2e-16. Additionally, I would infer that `shot number` is not significant with a p-value of 0.01865 which is less than my bonferroni correction of 0.007.
+>The MANOVA I decied to run was testing whether shot number, shot clock, dribbles, touch time, shot distance, and closest defender distance means differed across if the shot was a two or three -pointer. Since the MANOVA was significant, I performed one-way ANOVAs for each each variable to see which ones are significant. However, since my categorical variable is binary, the post-hoc t tests are unnecessary since the significance can be inferred from the one-way ANOVAs. Therefore, the bonferroni correction I used to determined significance is 0.007 because I performed 1 MANOVA and 6 ANOVAs, which is 7 total tests. Using the bonferroni correction, I would infer that shot clock, dribbles, touch time, shot distance, and closest defender distance are significant with a p-value of <2.2e-16. Additionally, I would infer that shot number is not significant with a p-value of 0.01865 which is less than my bonferroni correction of 0.007.
 
 >For the assumptions, I would assume that random sampling is met, but I would assume that independent observations would be violated due to some of samples being taken from the same game together with the same player. I would assume that normality is met because although there is some outliers, most of the data is within a certain mean. Moreover, I would also assume that covariances are not equal between each of the variables. The assumption of linear relationships among DVs would also be violated because most of the variables are going to have some outliers when plotting them. Lastly, multicollinearity would be violated because the most of these variables are more than just closely related. 
 
@@ -155,7 +155,7 @@ t.test(data=shoottest,shot_dist~player_name)
 
 # 3. Linear Regression Model
 
->The linear regression model I chose to perform was looking at Lebron James `total points` and determining whether `shot distance` and `quarter/period` had an impact on this variable. 
+>The linear regression model I chose to perform was looking at Lebron James total points and determining whether shot distance and quarter/period had an impact on this variable. 
 
 >Coefficient Estimates: 
 
@@ -261,7 +261,7 @@ resid_resamp %>% t %>% as.data.frame %>% summarize_all(sd)
 
 # 5. Logistic Regression
 
->The logistic regression model that I chose to run was testing whether `closest defender distance` and which `quarter/period` the shot was taken in had an effect on if the shot was `made` or `missed` for two of the greatest shooters in the game of basketball, Stephen Curry and Klay Thompson.
+>The logistic regression model that I chose to run was testing whether closest defender distance and which quarter/period the shot was taken in had an effect on if the shot was made or missed for two of the greatest shooters in the game of basketball, Stephen Curry and Klay Thompson.
 
 >Coefficient estimates: 
 
@@ -286,7 +286,7 @@ resid_resamp %>% t %>% as.data.frame %>% summarize_all(sd)
 >* *Specificity (TNR)* - The overall specificity was pretty good with the proportion of shots correctly classified as `missed` was 0.781. 
 
 >ROC Curve/AUC:
-The calculated AUC was 0.54, which is not the greatest and indicates that it is hard to predict whether a shot will be `made` or `missed` by only using how close the closest defender was in feet and which quarter the shot was attempted in. 
+The calculated AUC was 0.54, which is not the greatest and indicates that it is hard to predict whether a shot will be made or missed by only using how close the closest defender was in feet and which quarter the shot was attempted in. 
 
 ```{R}
 #Testing
@@ -352,7 +352,7 @@ summarize_all(diags,mean)
 
 >For my LASSO regression model I chose to perform a test that determines which variables would be good predictors of if Lebron James takes a two or three point shot. 
 
->The variables that were retained in this model were `game_id`, or which team Lebron was playing against. `Period`, or which quarter he attempted the shot in. `Shot_clock`, or what the shot clock was at at the time Lebron attempted the shot. `Touch_time`, or the total time that Lebron was possessing the ball before attempting the shot. `Shot_dist`, or the distance from the basket in feet. Lastly, `close_def_dist`, or how far away the closest defender was in feet.
+>The variables that were retained in this model were game_id, or which team Lebron was playing against. Period, or which quarter he attempted the shot in. Shot clock, or what the shot clock was at at the time Lebron attempted the shot. Touch time, or the total time that Lebron was possessing the ball before attempting the shot. Shot dist, or the distance from the basket in feet. Lastly, close def dist, or how far away the closest defender was in feet.
 
 >Following the 10-fold CV, the results show that the AUC was 0.9974 with an accuracy of 0.9726. Both of these calculated results show that this model fits extremely well and that these variables are extremely good predictors in determining which shot Lebron James is going to attempt. 
 

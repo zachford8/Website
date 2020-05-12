@@ -29,7 +29,7 @@
       <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>
       
       <guid>/resume/</guid>
-      <description> Resume Hello Kelsi   </description>
+      <description>EDUCATION  The University of Texas at Austin (August 2017 - May 2020)  Bachelor of Arts and Science, Biology Minor: Business  Concordia University Texas (August 2015 - April 2017)  Bachelor of Science, Biology    EXPERIENCE  Robin Healthcare – Senior Medical Scribe ; Austin, TX (June 2019 - Present)  Accurately document medical visits and procedures as they are being performed by different medical providers across the United States Integrate provider dictations regarding imaging studies, lab results, procedural care, diagnoses, follow-up instructions, and prescriptions into the clinical note Navigate, maintain, and enter information into electronic medical record (EMR) databases Collaborate with a team to ensure the provider’s clinic is complete from start to finish  Luxury Boat Rentals – Boat Rental Associate/Small Boat Captain ; Austin, TX (May 2018 - August 2018)  Performed exceptional customer service to rental customers Coordinated up to 14 watercrafts, ranging from 10ft to 30ft, ensuring each vessel was clean, fueled, and operationally harmless Instructed customers on adequate operation of the vessel, including watercraft safety, directions, and caution signs Supervised up to 17 customers as small vessel captain  Twin Creeks Country Club – Assistant Golf Professional ; Cedar Park, TX (April 2016 - August 2018)  Illustrated exquisite professional customer service to all country club members and guests Ensured 82 golf carts were clean and ready for use, while other daily tasks such as the driving range, parking lot, and communal areas were in pristine condition for member use Handled appearance in the Golf Shop, concerning merchandise displays, restocking, and tagging Aided in the management of department staff, including starter and member service attendants Processed payments through a point-of-sale system for merchandise sales, green fees, and guest fees    LEADERSHIP EXPERIENCE AND ACTIVITIES  Phi Kappa Psi – Member (August 2017 - May 2019)</description>
     </item>
     
     <item>
@@ -94,11 +94,11 @@ Follow the following steps:
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/myproject1/</guid>
-      <description>Introduction: The two datasets that I have chosen to two use are both from the National Football League (NFL). One of which has attendance data for each football teams from 2000-2019 and the other dataset has standings statistics for each football teams from 2000-2019. I acquired these two datasets through the website github.com. The variables that are within the attendance dataset are team, team name, year, total overall attendance for the year, total home attendance for the year, total away attendance for the year, the week of the season, and attendance for that week whether it was home or away.</description>
+      <description>1) Introduction:  The two datasets that I have chosen to use are both from the National Football League (NFL). One of which has attendance data for each football teams from 2000-2019 and the other dataset has standings statistics for each football teams from 2000-2019. I acquired these two datasets through the website github.com. The variables that are within the attendance dataset are team, team name, year, total overall attendance for the year, total home attendance for the year, total away attendance for the year, the week of the season, and attendance for that week whether it was home or away.</description>
     </item>
     
     <item>
-      <title>SDS348 - Project 2: Modeling, Testing, and Predicting</title>
+      <title>Project 2: Modeling, Testing, and Predicting</title>
       <link>/myproject2/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
