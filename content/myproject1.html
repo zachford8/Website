@@ -1,0 +1,304 @@
+---
+title: 'Project 1: Exploratory Data Analysis'
+author: "SDS348"
+date: ''
+output:
+  pdf_document:
+    toc: no
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+---
+
+
+
+<ol style="list-style-type: decimal">
+<li>Introduction:
+The two datasets that I have chosen to two use are both from the National Football League (NFL). One of which has attendance data for each football teams from 2000-2019 and the other dataset has standings statistics for each football teams from 2000-2019. I acquired these two datasets through the website github.com. The variables that are within the attendance dataset are team, team name, year, total overall attendance for the year, total home attendance for the year, total away attendance for the year, the week of the season, and attendance for that week whether it was home or away. The variables that are within the standings dataset are team, team name, year, wins for that year, losses for that year, total points scored that year, total points allowed that year, the points differential (points scored – points allowed), margin of victory (points differential/games played), strength of schedule, simple rating, offensive ranking, defensive ranking, if the team made the playoffs, if the team won the Super Bowl. I find these datasets interesting because I am a huge fan of the NFL and I think that I will be able to find many interesting points within these two datasets.</li>
+</ol>
+<pre class="r"><code>library(tidyverse)
+library(dplyr)
+library(tinytex)
+library(rlang)
+attendance &lt;- readr::read_csv(&#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-04/attendance.csv&#39;)
+standings &lt;- readr::read_csv(&#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-04/standings.csv&#39;)</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Untidying then Tidying
+Since both of these datasets were already tidy, the following two sets of code use <code>pivot_longer</code> and <code>pivot_wider</code>to untidy then make the two datasets tidy again.</li>
+</ol>
+<p>2a) Standings dataset
+For this dataset, I used <code>pivot_longer</code> to move the data from playoffs column and sb_winner column to a new column called “name” and moved the values within each of the playoffs and sb_winner columns to a column called “value.” Then, I used <code>pivot_wider</code> to move the values in the “name” column back to their own columns and moved the values within “value” column back to the playoffs and sb_winner columns.</p>
+<pre class="r"><code>nflstand&lt;-standings%&gt;%
+  pivot_longer(cols=c(playoffs, sb_winner), 
+               names_to = &#39;name&#39;, 
+               values_to = &#39;value&#39;)
+newnflstand&lt;-nflstand%&gt;%
+  pivot_wider(names_from = &#39;name&#39;, 
+              values_from = &#39;value&#39;)</code></pre>
+<p>2b) Attendance dataset
+For this dataset, I used <code>pivot_longer</code> to move the data from the total attendance, home attendance, away attendance, and weekly attendance columns to a new column called “name” and moved the values within each of these columns to a column called “value.” Then, I used <code>pivot_wider</code> to move the values in the “name” column back to their own columns and moved the values within “value” column back to the total attendance, home/away attendance, and weekly attendance columns.</p>
+<pre class="r"><code>nflatt&lt;-attendance%&gt;%
+  pivot_longer(cols=c(-team,-team_name, -year, -week), 
+               names_to = &#39;name&#39;, 
+               values_to = &#39;value&#39;)
+newnflatt&lt;-nflatt%&gt;%
+  pivot_wider(names_from = &#39;name&#39;, 
+              values_from = &#39;value&#39;)</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Joining both of the datasets
+The type of join that I used was a <code>left_join</code> to join the standings dataset and the attendance dataset. This type of join keeps everything in the standings dataset but combines the statistics within the attendance dataset by team.<br />
+-In the standings dataset, I chose to drop the weekly attendance and weeks that were originally in the attendance dataset since in the standings dataset everything is separated by season.
+-In the standings dataset, I chose to drop the strength of schedule and simple rating because both of those statistics are calculated by using the points_scored and points_allowed which I have already included.</li>
+</ol>
+<pre class="r"><code>boomatt&lt;-newnflatt%&gt;%
+  select(team, team_name, year, total, home, away)%&gt;%
+  unite(team, team_name, col=&#39;team&#39;, sep=&#39; &#39;)%&gt;%
+  distinct(total,.keep_all = TRUE)
+boomstand&lt;-newnflstand%&gt;%
+  select(-strength_of_schedule,-simple_rating)%&gt;%
+  unite(team, team_name, col = &#39;team&#39;, sep=&#39; &#39;)
+boomfull&lt;-left_join(boomstand, boomatt)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Create summary stats using <code>filter</code>, <code>select</code>, <code>arrange</code>, <code>mutate</code> with each stat using <code>group_by</code> and <code>summarize</code></li>
+</ol>
+<p>3.1) Which team/teams has the most wins?</p>
+<pre class="r"><code>boomfull%&gt;%
+  group_by(team)%&gt;%
+  summarize(totwins=sum(wins))%&gt;%
+  arrange(desc(totwins))</code></pre>
+<pre><code>## # A tibble: 34 x 2
+##    team                 totwins
+##    &lt;chr&gt;                  &lt;dbl&gt;
+##  1 New England Patriots     237
+##  2 Pittsburgh Steelers      205
+##  3 Green Bay Packers        197
+##  4 Indianapolis Colts       197
+##  5 Baltimore Ravens         190
+##  6 Philadelphia Eagles      190
+##  7 New Orleans Saints       183
+##  8 Denver Broncos           182
+##  9 Seattle Seahawks         182
+## 10 Dallas Cowboys           168
+## # … with 24 more rows</code></pre>
+<p>3.2) How many teams in the top 5th percentile of total attendance have won the superbowl?</p>
+<pre class="r"><code>boomfull%&gt;%
+  mutate(total_ptile=ntile(total, 100))%&gt;%
+  filter(total_ptile&gt;95 &amp; sb_winner==&#39;Won Superbowl&#39;)%&gt;%
+  select(team, year)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   team             year
+##   &lt;chr&gt;           &lt;dbl&gt;
+## 1 New York Giants  2007
+## 2 New York Giants  2011</code></pre>
+<p>3.3) Which team has won the least amount of games and won the superbowl?</p>
+<pre class="r"><code>boomfull%&gt;%
+  filter(sb_winner==&#39;Won Superbowl&#39;)%&gt;%
+  group_by(team, year)%&gt;%
+  summarize(max_wins=max(wins))%&gt;%
+  arrange(max_wins)</code></pre>
+<pre><code>## # A tibble: 20 x 3
+## # Groups:   team [12]
+##    team                  year max_wins
+##    &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;
+##  1 New York Giants       2011        9
+##  2 Baltimore Ravens      2012       10
+##  3 Green Bay Packers     2010       10
+##  4 New York Giants       2007       10
+##  5 New England Patriots  2001       11
+##  6 New England Patriots  2018       11
+##  7 Pittsburgh Steelers   2005       11
+##  8 Baltimore Ravens      2000       12
+##  9 Denver Broncos        2015       12
+## 10 Indianapolis Colts    2006       12
+## 11 Kansas City Chiefs    2019       12
+## 12 New England Patriots  2014       12
+## 13 Pittsburgh Steelers   2008       12
+## 14 Tampa Bay Buccaneers  2002       12
+## 15 New Orleans Saints    2009       13
+## 16 Philadelphia Eagles   2017       13
+## 17 Seattle Seahawks      2013       13
+## 18 New England Patriots  2003       14
+## 19 New England Patriots  2004       14
+## 20 New England Patriots  2016       14</code></pre>
+<p>3.4) Which year has the highest total attendance?</p>
+<pre class="r"><code>boomfull%&gt;%
+  group_by(year)%&gt;%
+  summarize(yearly_total=sum(total))%&gt;%
+  arrange(desc(yearly_total))</code></pre>
+<pre><code>## # A tibble: 20 x 2
+##     year yearly_total
+##    &lt;dbl&gt;        &lt;dbl&gt;
+##  1  2016     35577342
+##  2  2014     35213286
+##  3  2006     35212102
+##  4  2007     35195370
+##  5  2013     35021138
+##  6  2015     35018958
+##  7  2008     34919844
+##  8  2005     34607582
+##  9  2012     34606694
+## 10  2009     34564450
+## 11  2004     34540852
+## 12  2017     34506850
+## 13  2018     34355162
+## 14  2010     34281718
+## 15  2003     34137274
+## 16  2019     34080078
+## 17  2002     33958742
+## 18  2000     32703480
+## 19  2001     32613778
+## 20  2011           NA</code></pre>
+<p>3.5) Which superbowl winning team had the highest total attendance throughtout the season?</p>
+<pre class="r"><code>boomfull%&gt;%
+  filter(sb_winner==&#39;Won Superbowl&#39;)%&gt;%
+  group_by(team, year)%&gt;%
+  summarize(total_att=sum(total))%&gt;%
+  arrange(desc(total_att))</code></pre>
+<pre><code>## # A tibble: 20 x 3
+## # Groups:   team [12]
+##    team                  year total_att
+##    &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;
+##  1 New York Giants       2011   1232157
+##  2 New York Giants       2007   1197501
+##  3 Denver Broncos        2015   1141878
+##  4 New England Patriots  2003   1127515
+##  5 Green Bay Packers     2010   1122668
+##  6 Philadelphia Eagles   2017   1117141
+##  7 New Orleans Saints    2009   1116009
+##  8 Kansas City Chiefs    2019   1115771
+##  9 New England Patriots  2014   1111983
+## 10 Baltimore Ravens      2012   1109404
+## 11 New England Patriots  2004   1108210
+## 12 New England Patriots  2016   1094772
+## 13 Seattle Seahawks      2013   1094133
+## 14 Pittsburgh Steelers   2008   1076998
+## 15 New England Patriots  2018   1068530
+## 16 Baltimore Ravens      2000   1062373
+## 17 Pittsburgh Steelers   2005   1048739
+## 18 Tampa Bay Buccaneers  2002   1044920
+## 19 Indianapolis Colts    2006   1028634
+## 20 New England Patriots  2001    977717</code></pre>
+<p>3.6) Correlation points scored and points allowed vs. Off. ranking and Def. ranking</p>
+<pre class="r"><code>boomfull%&gt;%
+  select(points_for, points_against, offensive_ranking, defensive_ranking)%&gt;%
+  cor()</code></pre>
+<pre><code>##                   points_for points_against offensive_ranking defensive_ranking
+## points_for         1.0000000     -0.1852656         0.9517868         0.1974664
+## points_against    -0.1852656      1.0000000        -0.2459601        -0.9286826
+## offensive_ranking  0.9517868     -0.2459601         1.0000000         0.2245290
+## defensive_ranking  0.1974664     -0.9286826         0.2245290         1.0000000</code></pre>
+<p>3.7) Which team has scored the most points from 2000-2019?</p>
+<pre class="r"><code>boomfull%&gt;%
+  group_by(team)%&gt;%
+  summarize(tot_points=sum(points_for))%&gt;%
+  arrange(desc(tot_points))</code></pre>
+<pre><code>## # A tibble: 34 x 2
+##    team                 tot_points
+##    &lt;chr&gt;                     &lt;dbl&gt;
+##  1 New England Patriots       8723
+##  2 New Orleans Saints         8301
+##  3 Green Bay Packers          8077
+##  4 Indianapolis Colts         7954
+##  5 Philadelphia Eagles        7742
+##  6 Denver Broncos             7519
+##  7 Kansas City Chiefs         7451
+##  8 Pittsburgh Steelers        7381
+##  9 Seattle Seahawks           7335
+## 10 Minnesota Vikings          7257
+## # … with 24 more rows</code></pre>
+<p>3.8) Teams who have won the superbowl and how many playoff appearances they have?</p>
+<pre class="r"><code>play&lt;-boomfull%&gt;%
+  filter(playoffs==&#39;Playoffs&#39;)%&gt;%
+  group_by(team)%&gt;%
+  summarize(tot_playoff=sum(n()))%&gt;%
+  arrange(desc(tot_playoff))
+
+sb&lt;-boomfull%&gt;%
+  filter(sb_winner==&#39;Won Superbowl&#39;)%&gt;%
+  group_by(team)%&gt;%
+  summarize(tot_wonsb=sum(n()))%&gt;%
+  arrange(desc(tot_wonsb))
+
+inner_join(sb, play)%&gt;%
+  arrange(desc(tot_playoff))</code></pre>
+<pre><code>## # A tibble: 12 x 3
+##    team                 tot_wonsb tot_playoff
+##    &lt;chr&gt;                    &lt;int&gt;       &lt;int&gt;
+##  1 New England Patriots         6          17
+##  2 Green Bay Packers            1          14
+##  3 Indianapolis Colts           1          14
+##  4 Philadelphia Eagles          1          13
+##  5 Seattle Seahawks             1          13
+##  6 Baltimore Ravens             2          12
+##  7 Pittsburgh Steelers          2          12
+##  8 Denver Broncos               1           9
+##  9 Kansas City Chiefs           1           9
+## 10 New Orleans Saints           1           9
+## 11 New York Giants              2           8
+## 12 Tampa Bay Buccaneers         1           5</code></pre>
+<p>3.9) Correlation between points allowed, points scored, playoffs, and superbowl?</p>
+<pre class="r"><code>boom3.9&lt;-boomfull%&gt;%
+  mutate(playoffs=case_when(playoffs==&#39;Playoffs&#39;~&#39;1&#39;, playoffs==&#39;No Playoffs&#39;~ &#39;0&#39;, TRUE~playoffs), playoffs=as.numeric(playoffs))%&gt;%
+  mutate(sb_winner=case_when(sb_winner==&#39;Won Superbowl&#39;~&#39;1&#39;, sb_winner==&#39;No Superbowl&#39;~ &#39;0&#39;, TRUE~sb_winner), sb_winner=as.numeric(sb_winner))
+
+boom3.9%&gt;%
+  select(points_for, points_against, playoffs, sb_winner)%&gt;%
+  cor()</code></pre>
+<pre><code>##                points_for points_against   playoffs  sb_winner
+## points_for      1.0000000     -0.1852656  0.5625480  0.1362052
+## points_against -0.1852656      1.0000000 -0.5315654 -0.2025224
+## playoffs        0.5625480     -0.5315654  1.0000000  0.2316630
+## sb_winner       0.1362052     -0.2025224  0.2316630  1.0000000</code></pre>
+<p>3.10) Correlation between margin of victory and playoff and superbowl</p>
+<pre class="r"><code>boom3.10&lt;-boomfull%&gt;%
+  mutate(playoffs=case_when(playoffs==&#39;Playoffs&#39;~&#39;1&#39;, playoffs==&#39;No Playoffs&#39;~ &#39;0&#39;, TRUE~playoffs), playoffs=as.numeric(playoffs))%&gt;%
+  mutate(sb_winner=case_when(sb_winner==&#39;Won Superbowl&#39;~&#39;1&#39;, sb_winner==&#39;No Superbowl&#39;~ &#39;0&#39;, TRUE~sb_winner), sb_winner=as.numeric(sb_winner))
+
+boom3.10%&gt;%
+  select(margin_of_victory, playoffs, sb_winner)%&gt;%
+  cor()</code></pre>
+<pre><code>##                   margin_of_victory  playoffs sb_winner
+## margin_of_victory         1.0000000 0.7102683 0.2155921
+## playoffs                  0.7102683 1.0000000 0.2316630
+## sb_winner                 0.2155921 0.2316630 1.0000000</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Visiualizing</li>
+</ol>
+<p>4.1) Correlation matrix heatmap between numeric variables</p>
+<pre class="r"><code>vis1&lt;-boomfull%&gt;%select(-team,-playoffs,-sb_winner, -total, -home, -away)%&gt;%cor()</code></pre>
+<pre class="r"><code>library(GGally)
+ggcorr(vis1)</code></pre>
+<p><img src="/myproject1_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>4.2) This scatterplot has the total away attendance for each season on the y-axis, the total home attendance for each season on the x-axis, and each color on the scatterplot correlates to each team which is labeled at the top of the plot.
+-Findings from this scatterplot show that the Dallas Cowboys have the highest total home attendance, no shock there. I also thought it was interesting that there are certain teams with outlier home attendance numbers while some teams had outlier away attendance numbers.</p>
+<pre class="r"><code>ggplot(boomfull, aes(x=home, y=away, color=team))+
+  geom_point(size=1.5)+
+  ylab(&quot;Away Attendance for the Season&quot;)+
+  xlab(&quot;Home Attendance for the Season&quot;)+
+  scale_y_continuous(breaks=seq(450000,700000,15000))+
+  scale_x_continuous(breaks = seq(200000,750000,20000))+
+  theme(axis.text.x = element_text(angle=45,hjust=1),legend.position=&quot;top&quot;,legend.title = element_text(size = 10), legend.text = element_text(size = 6))+
+  ggtitle(&quot;Team Home and Away Season Attendance&quot;)</code></pre>
+<p><img src="/myproject1_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>4.3) This barplot shows the relationship between the mean wins over each season and if the teams made the playoffs or not. The blue bars are the mean wins if the team made the playoffs while the red bars show the mean wins if the team missed the playoffs.
+-Some interesting findings from this plot show that both of the Los Angeles teams, the Rams and Chargers, had the most wins in their missed playoffs seasons. Another finding is that there is a clear wins difference between teams that made the playoffs that season and if they did not.</p>
+<pre class="r"><code>ggplot(boomfull, aes(x=team, y=wins, fill=playoffs))+
+  geom_bar(stat=&#39;summary&#39;, fun.y=&quot;mean&quot;, position = &#39;dodge&#39;)+
+  geom_errorbar(stat=&quot;summary&quot;, position=&quot;dodge&quot;)+
+  xlab(&quot;Team&quot;)+
+  ylab(&quot;Mean Wins&quot;)+
+  scale_y_continuous(breaks=seq(0,20,1))+
+  theme(axis.text.x = element_text(angle=45,hjust=1), legend.position = &quot;none&quot;)</code></pre>
+<p><img src="/myproject1_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<ol start="5" style="list-style-type: decimal">
+<li>Dimensionality Reduction</li>
+</ol>
+<pre class="r"><code>library(cluster)
+nfl&lt;-boomfull%&gt;%select(-team,-playoffs,-sb_winner)%&gt;%mutate_if(is.character, as.factor)
+nflgower&lt;-daisy(nfl, metric = &quot;gower&quot;)
+nflpam&lt;-pam(nflgower, k=3, diss=T)
+
+plot(nflpam, which=T)</code></pre>
+<p><img src="/myproject1_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>

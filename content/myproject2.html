@@ -1,0 +1,599 @@
+---
+title: 'SDS348 - Project 2: Modeling, Testing, and Predicting'
+author: "Zach Ford"
+date: ''
+output:
+  pdf_document: 
+    toc: yes
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+---
+
+
+
+<div id="introduction" class="section level1">
+<h1>0. Introduction</h1>
+<blockquote>
+<p>The dataset that I am using for this project contains data on different shots that were taken during different games of the 2014-2015 NBA season. I found this dataset on <code>www.kaggle.com</code>. Some notable variables within the dataset are <code>winorlose</code>, which determines if the game was won-<code>W</code> or lost-<code>L</code>. <code>shot_number</code> is current number of shots that a player has taken in that specific game. Another variable is <code>dribbles</code>, which is the amount of dribbles the player took before the shot. <code>touch_time</code> is the amount of time the player possessed the ball before taking the shot. <code>shot_dist</code> is the distance from the rim in feet from where the player took the shot. <code>pts_type</code> is whether the shot taken by the player was a two-<code>2</code> or three-<code>3</code> point shot, which is also under the variable <code>pts</code>. <code>shot_result</code> is whether the player <code>made</code> or <code>missed</code> the shot, this variable is also in binary form under the variable <code>fgm</code> with <code>1</code> = <code>made</code> and <code>0</code> = <code>missed</code>. <code>clost_def_dist</code> is how close the defender was to the player who attemped the shot in feet. The last notable variable is the <code>closeest_defender</code> and <code>player_name</code> which are the names of the closest defender as well as the player who took the shot, respectively. To tidy the dataset, I removed all rows that contained an <code>NA</code> value as these would not contribute the following statistical tests that I am going to run in this project, I then made all column names lowercase for ease, and I renamed the <code>w</code> column to <code>winorlose</code> for clairity. Moreover, I also took away <code>CLOSEST_DEFENDER_PLAYER_ID</code> and <code>player_id</code> which are just redundant variables. I also decieded to add in <code>totpts</code> which is just the total points for a specific player within a specific game. Following the tidying, I have a total of 122,502 rows with 20 columns.</p>
+</blockquote>
+<pre class="r"><code>shot_logs&lt;-readr::read_csv(&quot;/Users/zachford/Documents/My Website/content/project2data.csv&quot;)
+#Tidying
+shotdat&lt;-shot_logs%&gt;%
+  select(-CLOSEST_DEFENDER_PLAYER_ID,-player_id)%&gt;%
+  drop_na()%&gt;%
+  rename_all(.funs = tolower)%&gt;%
+  rename(winorlose=w)%&gt;%
+  mutate(quarter=as.factor(period))
+
+head(shotdat)</code></pre>
+<pre><code>## # A tibble: 6 x 20
+## game_id matchup location winorlose final_margin
+shot_number period game_clock shot_clock dribbles
+## &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;time&gt; &lt;dbl&gt;
+&lt;dbl&gt;
+## 1 2.14e7 MAR 04… A W 24 1 1 01:09 10.8 2
+## 2 2.14e7 MAR 04… A W 24 2 1 00:14 3.4 0
+## 3 2.14e7 MAR 04… A W 24 4 2 11:47 10.3 2
+## 4 2.14e7 MAR 04… A W 24 5 2 10:34 10.9 2
+## 5 2.14e7 MAR 04… A W 24 6 2 08:15 9.1 2
+## 6 2.14e7 MAR 04… A W 24 7 4 10:15 14.5 11
+## # … with 10 more variables: touch_time &lt;dbl&gt;, shot_dist
+&lt;dbl&gt;, pts_type &lt;dbl&gt;, shot_result &lt;chr&gt;,
+## # closest_defender &lt;chr&gt;, close_def_dist &lt;dbl&gt;, fgm
+&lt;dbl&gt;, pts &lt;dbl&gt;, player_name &lt;chr&gt;,
+## # quarter &lt;fct&gt;</code></pre>
+</div>
+<div id="manovaanova" class="section level1">
+<h1>1. MANOVA/ANOVA</h1>
+<blockquote>
+<p>The MANOVA I decied to run was testing whether <code>shot number</code>, <code>shot clock</code>, <code>dribbles</code>, <code>touch time</code>, <code>shot distance</code>, and <code>closest defender distance</code> means differed across if the shot was a <code>two</code> or <code>three</code> -pointer. Since the MANOVA was significant, I performed one-way ANOVAs for each each variable to see which ones are significant. However, since my categorical variable is binary, the post-hoc t tests are unnecessary since the significance can be inferred from the one-way ANOVAs. Therefore, the bonferroni correction I used to determined significance is 0.007 because I performed 1 MANOVA and 6 ANOVAs, which is 7 total tests. Using the bonferroni correction, I would infer that <code>shot clock</code>, <code>dribbles</code>, <code>touch time</code>, <code>shot distance</code>, and <code>closest defender distance</code> are significant with a p-value of &lt;2.2e-16. Additionally, I would infer that <code>shot number</code> is not significant with a p-value of 0.01865 which is less than my bonferroni correction of 0.007.</p>
+</blockquote>
+<blockquote>
+<p>For the assumptions, I would assume that random sampling is met, but I would assume that independent observations would be violated due to some of samples being taken from the same game together with the same player. I would assume that normality is met because although there is some outliers, most of the data is within a certain mean. Moreover, I would also assume that covariances are not equal between each of the variables. The assumption of linear relationships among DVs would also be violated because most of the variables are going to have some outliers when plotting them. Lastly, multicollinearity would be violated because the most of these variables are more than just closely related.</p>
+</blockquote>
+<blockquote>
+<p>Hypothesis:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>H<sub>0</sub> - For the shot number, shot clock, dribbles, touch time, shot distance, and closest defender distance, the means for whether the shot was a two-pointer or three-pointer are equal.</li>
+<li>H<sub>A</sub> - For at least one response variable, at least one group mean different.</li>
+</ul>
+</blockquote>
+<pre class="r"><code>#MANOVA
+manshot&lt;-
+  manova(
+    cbind(shot_number,shot_clock,dribbles,
+          touch_time,shot_dist,close_def_dist)~pts_type,data=shotdat)
+summary(manshot) </code></pre>
+<pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## pts_type 1 0.5633 26335 6 122495 &lt; 2.2e-16 ***
+## Residuals 122500
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>#Bonferroni Correction
+0.05/7</code></pre>
+<pre><code>## [1] 0.007142857</code></pre>
+<pre class="r"><code>#Univarate ANOVAs
+summary.aov(manshot)</code></pre>
+<pre><code>## Response shot_number :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## pts_type 1 86 86.459 3.9454 0.047 *
+## Residuals 122500 2684407 21.914
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response shot_clock :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## pts_type 1 4380 4380.0 132.01 &lt; 2.2e-16 ***
+## Residuals 122500 4064518 33.2
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response dribbles :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## pts_type 1 43699 43699 3874.2 &lt; 2.2e-16 ***
+## Residuals 122500 1381748 11
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response touch_time :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## pts_type 1 37529 37529 4447.1 &lt; 2.2e-16 ***
+## Residuals 122500 1033773 8
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response shot_dist :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## pts_type 1 5118623 5118623 145194 &lt; 2.2e-16 ***
+## Residuals 122500 4318574 35
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response close_def_dist :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## pts_type 1 161947 161947 25915 &lt; 2.2e-16 ***
+## Residuals 122500 765536 6
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>#Probability of 1 Type I error
+1-0.95^7</code></pre>
+<pre><code>## [1] 0.3016627</code></pre>
+</div>
+<div id="randomization-test" class="section level1">
+<h1>2. Randomization Test</h1>
+<blockquote>
+<p>The randomization test that I performed determine whether shot distance is the same or different between two of the greatest shooters to ever touch a basketball, Stephen Curry and Klay Thompson. My formal null hypothesis was shot distance mean is the same for Stephen Curry and Klay Thompson. Following the test, I would fail to reject my null hypothesis that shot distance mean is the same between Stephen Curry and Klay Thompson, given that my two-tailed p-value was 0.166 and normal p-value was 0.1664 I included the Welch t-test for comparison which revealed a p-value of 0.1716.</p>
+</blockquote>
+<blockquote>
+<p>Hypothesis:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>H<sub>0</sub> - shot distance mean is the same between Stephen Curry and Klay Thompson.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>H<sub>A</sub> - shot distance mean differs between Stephen Curry and Klay Thompson.</li>
+</ul>
+</blockquote>
+<pre class="r"><code>#Tidying
+shoottest&lt;-shotdat%&gt;%filter(player_name==&quot;stephen curry&quot;| player_name==&quot;klay thompson&quot;)
+
+#Calculated mean difference between groups
+shoottest%&gt;%
+  group_by(player_name)%&gt;%
+  summarize(means=mean(shot_dist))%&gt;%
+  summarize(meandiff=diff(means))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   meandiff
+##      &lt;dbl&gt;
+## 1    0.554</code></pre>
+<pre class="r"><code>#Monte Carlo 
+random2&lt;-vector()
+for(i in 1:5000){
+new2&lt;-data.frame(dist=sample(shoottest$shot_dist),name=shoottest$player_name)
+random2[i]&lt;-mean(new2[new2$name==&quot;stephen curry&quot;,]$dist)-
+            mean(new2[new2$name==&quot;klay thompson&quot;,]$dist)}
+
+#p-value
+mean(random2&gt;0.5541117 | random2&lt; -0.5541117) #Two-tailed</code></pre>
+<pre><code>## [1] 0.1788</code></pre>
+<pre class="r"><code>mean(random2&gt; 0.5541117)*2 #Normal</code></pre>
+<pre><code>## [1] 0.1808</code></pre>
+<pre class="r"><code>#Welch t-test for comparison
+t.test(data=shoottest,shot_dist~player_name)</code></pre>
+<pre><code>##
+## Welch Two Sample t-test
+##
+## data: shot_dist by player_name
+## t = -1.3676, df = 1876.5, p-value = 0.1716
+## alternative hypothesis: true difference in means is not
+equal to 0
+## 95 percent confidence interval:
+## -1.3487257 0.2405023
+## sample estimates:
+## mean in group klay thompson mean in group stephen curry
+## 16.71826 17.27237</code></pre>
+<pre class="r"><code>#Plot
+{hist(random2,main=&quot;&quot;,ylab=&quot;&quot;); abline(v = 0.5541117,col=&quot;red&quot;)}</code></pre>
+<p><img src="/myproject2_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="linear-regression-model" class="section level1">
+<h1>3. Linear Regression Model</h1>
+<blockquote>
+<p>The linear regression model I chose to perform was looking at Lebron James <code>total points</code> and determining whether <code>shot distance</code> and <code>quarter/period</code> had an impact on this variable.</p>
+</blockquote>
+<blockquote>
+<p>Coefficient Estimates:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>Intercept</em> - Lebron James predicted points total with an average shot distance in the 1st quarter would be 21.066.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>q2</em> - Controlling for shot distance, his point total in the 2nd quarter is 0.111 points lower than in the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>q3</em> - Controlling for shot distance, his point total in the 3rd quarter is 0.116 points higher than in the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>q4</em> - Controlling for shot distance, his point total in the 4th quarter is 0.295 points higher than in the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>q5</em> - Controlling for shot distance, his point total in the 5th quarter (or overtime) is 9.967 points higher than in the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>sdist_c</em> - Controlling for the different quarters, for every one unit increase in Lebron’s shot distance, his total points went down by 0.07.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>sdist_c:q2</em> - The slope for shot distance on total points is 0.046 higher in the 2nd quarter compared to the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>sdist_c:q3</em> - The slope for shot distance on total points is 0.153 higher in the 3rd quarter compared to the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>sdist_c:q4</em> - The slope for shot distance on total points is 0.046 higher in the 4th quarter compared to the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>sdist_c:q5</em> - The slope for shot distance on total points is 0.046 higher in the 5th quarter (or overtime) compared to the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>There were no significant changes from before the robust standard errors compared to after.</p>
+</blockquote>
+<blockquote>
+<p>Hypothesis:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>H<sub>0</sub> - Controlling for shot distance, the different quarter of a basketball game does not explain variation in a total points for Lebron James.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>H<sub>A</sub> - Controlling for the different quarter of a basketball game, shot distance does not explain variation in a total points for Lebron James.</li>
+</ul>
+</blockquote>
+<pre class="r"><code>#Tidying
+lebron3&lt;-shotdat%&gt;%filter(player_name==&quot;lebron james&quot;)%&gt;%group_by(matchup)%&gt;%mutate(totpts=sum(pts))
+
+#Mean Centering
+lebron3$sdist_c&lt;-lebron3$shot_dist-mean(lebron3$shot_dist)
+
+#Testing
+#Without Interaction
+fit3&lt;-lm(totpts ~ sdist_c + quarter, data=lebron3)
+summary(fit3)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = totpts ~ sdist_c + quarter, data = lebron3)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -11.414 -5.142 -1.175 4.415 15.133
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 21.15696 0.43081 49.110 &lt; 2e-16 ***
+## sdist_c 0.01114 0.02485 0.448 0.654
+## quarter2 -0.16025 0.62171 -0.258 0.797
+## quarter3 0.11846 0.62664 0.189 0.850
+## quarter4 0.28865 0.66189 0.436 0.663
+## quarter5 9.84989 2.24628 4.385 1.29e-05 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 6.972 on 941 degrees of freedom
+## Multiple R-squared: 0.02111, Adjusted R-squared: 0.0159
+## F-statistic: 4.058 on 5 and 941 DF, p-value: 0.001194</code></pre>
+<pre class="r"><code>#With Interaction
+fitint3&lt;-lm(totpts ~ sdist_c * quarter, data=lebron3)
+summary(fitint3)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = totpts ~ sdist_c * quarter, data = lebron3)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -11.885 -5.142 -1.216 4.240 15.825
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 21.06620 0.43264 48.692 &lt; 2e-16 ***
+## sdist_c -0.06995 0.04802 -1.457 0.1456
+## quarter2 -0.11106 0.62580 -0.177 0.8592
+## quarter3 0.11556 0.62849 0.184 0.8542
+## quarter4 0.29476 0.66463 0.443 0.6575
+## quarter5 9.96693 2.24935 4.431 1.05e-05 ***
+## sdist_c:quarter2 0.04628 0.06813 0.679 0.4971
+## sdist_c:quarter3 0.15310 0.06903 2.218 0.0268 *
+## sdist_c:quarter4 0.14032 0.07241 1.938 0.0529 .
+## sdist_c:quarter5 0.12383 0.26418 0.469 0.6394
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 6.962 on 937 degrees of freedom
+## Multiple R-squared: 0.02806, Adjusted R-squared: 0.01872
+## F-statistic: 3.005 on 9 and 937 DF, p-value: 0.00153</code></pre>
+<pre class="r"><code>#Regression Plot
+ggplot(fitint3, aes(sdist_c,totpts))+
+  geom_point(aes(color=quarter))+
+  geom_smooth(method=&quot;lm&quot;, se=F)</code></pre>
+<p><img src="/myproject2_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Assumption Plots/Tests
+#Linearity
+resids&lt;-fitint3$residuals
+fitvals&lt;-fitint3$fitted.values
+ggplot()+
+  geom_point(aes(fitvals,resids))+
+  geom_hline(yintercept=0, col=&quot;red&quot;)</code></pre>
+<p><img src="/myproject2_files/figure-html/unnamed-chunk-4-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Normality
+ggplot()+
+  geom_qq(aes(sample=resids))+
+  geom_qq_line(aes(sample=resids), color=&#39;red&#39;)</code></pre>
+<p><img src="/myproject2_files/figure-html/unnamed-chunk-4-3.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Homoskedasticity
+bptest(fitint3)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fitint3
+## BP = 11.573, df = 9, p-value = 0.2385</code></pre>
+<pre class="r"><code>#Regression with Robust SEs
+coeftest(fitint3, vcov = vcovHC(fitint3))[,1:2]</code></pre>
+<pre><code>##                     Estimate Std. Error
+## (Intercept)      21.06620035 0.43504727
+## sdist_c          -0.06994845 0.04881733
+## quarter2         -0.11105752 0.63124037
+## quarter3          0.11555966 0.64585988
+## quarter4          0.29476422 0.64846754
+## quarter5          9.96692588 1.06031037
+## sdist_c:quarter2  0.04627967 0.07014154
+## sdist_c:quarter3  0.15309990 0.07095046
+## sdist_c:quarter4  0.14032441 0.07321027
+## sdist_c:quarter5  0.12383398 0.13319588</code></pre>
+</div>
+<div id="linear-regression-model-bootstrapping-sesresiduals" class="section level1">
+<h1>4. Linear Regression Model (Bootstrapping SEs/Residuals)</h1>
+<blockquote>
+<p>Given that there was not much difference between the original p-values/SEs and the robust p-values/SEs, there is a significant difference between those two and the bootstrapping p-values and SEs. Each of the SEs decreased significantly compared to the original and robust SEs that were calculated. There was not much difference between the original p-values and the ones calculated below.</p>
+</blockquote>
+<pre class="r"><code>##Bootstrapping SEs
+sdist&lt;-replicate(5000, {
+  boot&lt;-lebron3[sample(nrow(lebron3),replace=T),]
+  fit4a &lt;- lm(totpts ~ sdist_c * quarter, data=boot)
+  coef(fit4a)
+})
+
+sdist %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
+<pre><code>## (Intercept) sdist_c quarter2 quarter3 quarter4 quarter5
+sdist_c:quarter2 sdist_c:quarter3
+## 1 0.4281159 0.04792957 0.6283192 0.6303417 0.6330664
+3.875116 0.0695879 0.07047339
+## sdist_c:quarter4 sdist_c:quarter5
+## 1 0.07266219 NA</code></pre>
+<pre class="r"><code>##Bootstrapping Residuals
+fit4&lt;-lm(totpts ~ sdist_c * quarter, data=lebron3)
+resids&lt;-fit4$residuals
+fitted&lt;-fit4$fitted.values
+  
+resid_resamp&lt;-replicate(5000,{
+  new_resids&lt;-sample(resids,replace=TRUE)
+  lebron3$new_y&lt;-fitted+new_resids
+  fit4&lt;-lm(new_y~sdist_c*quarter, data=lebron3)
+  coef(fit4)
+})
+
+resid_resamp %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
+<pre><code>## (Intercept) sdist_c quarter2 quarter3 quarter4 quarter5
+sdist_c:quarter2 sdist_c:quarter3
+## 1 0.4284087 0.04741464 0.6235683 0.615782 0.6554076
+2.257845 0.06780534 0.06946905
+## sdist_c:quarter4 sdist_c:quarter5
+## 1 0.07163915 0.2640545</code></pre>
+</div>
+<div id="logistic-regression" class="section level1">
+<h1>5. Logistic Regression</h1>
+<blockquote>
+<p>The logistic regression model that I chose to run was testing whether <code>closest defender distance</code> and which <code>quarter/period</code> the shot was taken in had an effect on if the shot was <code>made</code> or <code>missed</code> for two of the greatest shooters in the game of basketball, Stephen Curry and Klay Thompson.</p>
+</blockquote>
+<blockquote>
+<p>Coefficient estimates:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>Intercept</em> - Odds of a made shot when closest defender distance=0 and the shot was taken in the 1st quarter is 0.856.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>Shot_dist</em> - Controlling for which quarter the shot was taken, for every one additional foot added to how close a defender was when the shot was attempted, odds of a made shot increased by a factor of 1.022.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>q2</em> - Controlling for shot distance, odds of a made shot in the 2nd quarter are 1.156 times higher than in the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>q3</em> - Controlling for shot distance, odds of a made shot in the 3rd quarter are 0.985 times higher than in the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>q4</em> - Controlling for shot distance, odds of a made shot in the 4th quarter are 0.757 times higher than in the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>q5</em> - Controlling for shot distance, odds of a made shot in the 5th quarter (or overtime) are 1.085 times higher than in the 1st quarter.</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>Accuracy, TPR, TNR:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>Accuracy</em> - The overall accuracy was decent, with the proportion of correctly classified made/missed shots being 0.537.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>Sensitivity (TPR)</em> - The overall sensitivity was not the best with the proportion of shots correctly classified as <code>made</code> was 0.272.</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><em>Specificity (TNR)</em> - The overall specificity was pretty good with the proportion of shots correctly classified as <code>missed</code> was 0.781.</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>ROC Curve/AUC:
+The calculated AUC was 0.54, which is not the greatest and indicates that it is hard to predict whether a shot will be <code>made</code> or <code>missed</code> by only using how close the closest defender was in feet and which quarter the shot was attempted in.</p>
+</blockquote>
+<pre class="r"><code>#Testing
+fit5&lt;-glm(fgm~close_def_dist+quarter, data=shoottest, family=&#39;binomial&#39;)
+coef(fit5)</code></pre>
+<pre><code>## (Intercept) close_def_dist quarter2 quarter3 quarter4
+quarter5
+## -0.15520008 0.02201325 0.14477399 -0.01520749
+-0.27846226 0.08173132</code></pre>
+<pre class="r"><code>exp(coef(fit5))</code></pre>
+<pre><code>## (Intercept) close_def_dist quarter2 quarter3 quarter4
+quarter5
+## 0.8562438 1.0222573 1.1557783 0.9849076 0.7569468
+1.0851642</code></pre>
+<pre class="r"><code>#Confusion Matrix
+shoottest$prob5&lt;-predict(fit5,type=&quot;response&quot;)
+pred5&lt;-ifelse(shoottest$prob5&gt;.5,1,0)
+table(predict=pred5,truth=shoottest$fgm)%&gt;%addmargins</code></pre>
+<pre><code>##        truth
+## predict    0    1  Sum
+##     0    772  660 1432
+##     1    216  246  462
+##     Sum  988  906 1894</code></pre>
+<pre class="r"><code>#Accuracy
+(772+246)/1894</code></pre>
+<pre><code>## [1] 0.5374868</code></pre>
+<pre class="r"><code>#Sensitivity (TPR)
+mean(shoottest[shoottest$fgm==1,]$prob5&gt;.5)</code></pre>
+<pre><code>## [1] 0.2715232</code></pre>
+<pre class="r"><code>#Specificity (TNR)
+mean(shoottest[shoottest$fgm==0,]$prob5&lt;.5)</code></pre>
+<pre><code>## [1] 0.7813765</code></pre>
+<pre class="r"><code>#Density Plot
+shoottest$logit&lt;-predict(fit5,type=&quot;link&quot;)
+shoottest%&gt;%ggplot()+
+  geom_density(aes(logit,color=fgm,fill=fgm), alpha=.4)+
+  theme(legend.position=c(.85,.85))+
+  geom_vline(xintercept=0)+xlab(&quot;logit (log-odds)&quot;)+
+  geom_rug(aes(logit,color=fgm))</code></pre>
+<p><img src="/myproject2_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#ROC Curve
+library(plotROC)
+library(pROC)
+ROCplot&lt;-ggplot(shoottest)+geom_roc(aes(d=fgm, m=prob5), n.cuts=0)+geom_segment(aes(x=0,xend=1,y=0,yend=1),lty=2)
+ROCplot</code></pre>
+<p><img src="/myproject2_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#AUC
+calc_auc(ROCplot)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.5400149</code></pre>
+<pre class="r"><code>#10-Fold CV
+k=10
+
+data5&lt;-shoottest[sample(nrow(shoottest)),]
+folds5&lt;-cut(seq(1:nrow(shoottest)),breaks=k,labels=F)
+
+diags&lt;-NULL
+for(i in 1:k){
+  
+  train&lt;-data5[folds5!=i,] 
+  test&lt;-data5[folds5==i,]
+  truth&lt;-test$fgm
+  
+  fit&lt;-glm(fgm~close_def_dist+quarter,data=train,family=&quot;binomial&quot;)
+  probs&lt;-predict(fit,newdata = test,type=&quot;response&quot;)
+  
+  diags&lt;-rbind(diags,class_diag(probs,truth))
+}
+
+summarize_all(diags,mean)</code></pre>
+<pre><code>##         acc      sens      spec       ppv       auc
+## 1 0.5296268 0.2708082 0.7716031 0.5181913 0.5301102</code></pre>
+</div>
+<div id="lasso-regression" class="section level1">
+<h1>6. LASSO Regression</h1>
+<blockquote>
+<p>For my LASSO regression model I chose to perform a test that determines which variables would be good predictors of if Lebron James takes a two or three point shot.</p>
+</blockquote>
+<blockquote>
+<p>The variables that were retained in this model were <code>game_id</code>, or which team Lebron was playing against. <code>Period</code>, or which quarter he attempted the shot in. <code>Shot_clock</code>, or what the shot clock was at at the time Lebron attempted the shot. <code>Touch_time</code>, or the total time that Lebron was possessing the ball before attempting the shot. <code>Shot_dist</code>, or the distance from the basket in feet. Lastly, <code>close_def_dist</code>, or how far away the closest defender was in feet.</p>
+</blockquote>
+<blockquote>
+<p>Following the 10-fold CV, the results show that the AUC was 0.9974 with an accuracy of 0.9726. Both of these calculated results show that this model fits extremely well and that these variables are extremely good predictors in determining which shot Lebron James is going to attempt.</p>
+</blockquote>
+<pre class="r"><code>#Tidying/Removing categorical variables
+lebron6&lt;-shotdat%&gt;%
+  filter(player_name==&quot;lebron james&quot;)%&gt;%
+  mutate(two=ifelse(pts_type==&quot;2&quot;,1,0))%&gt;%
+  select_if(is.numeric)%&gt;%
+  select(-fgm,-pts,-pts_type)
+
+#Testing
+y6&lt;-as.matrix(lebron6$two)
+x6&lt;-model.matrix(two~., data=lebron6)[,-1]
+x6&lt;-scale(x6)
+cv6&lt;-cv.glmnet(x6,y6,family=&quot;binomial&quot;)
+lasso6&lt;-glmnet(x6,y6,family=&quot;binomial&quot;,lambda = cv6$lambda.1se)
+coef(lasso6)</code></pre>
+<pre><code>## 10 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                          s0
+## (Intercept)     13.19177394
+## game_id          0.39124497
+## final_margin     .         
+## shot_number      .         
+## period           0.07646485
+## shot_clock      -0.47052278
+## dribbles         .         
+## touch_time       0.09387394
+## shot_dist      -13.24143811
+## close_def_dist  -0.14807543</code></pre>
+<pre class="r"><code>#10-Fold CV
+k=10
+
+data6&lt;-lebron6[sample(nrow(lebron6)),]
+folds6&lt;-cut(seq(1:nrow(lebron6)),breaks=k,labels=F)
+
+diags&lt;-NULL
+for(i in 1:k){
+  
+  train&lt;-data6[folds6!=i,] 
+  test&lt;-data6[folds6==i,]
+  truth&lt;-test$two
+  
+  fit&lt;-glm(two~game_id+period+shot_clock+touch_time+shot_dist+close_def_dist,data=train,family=&quot;binomial&quot;)
+  probs&lt;-predict(fit,newdata = test,type=&quot;response&quot;)
+  
+  diags&lt;-rbind(diags,class_diag(probs,truth))
+}
+
+summarize_all(diags,mean)</code></pre>
+<pre><code>##         acc     sens      spec       ppv      auc
+## 1 0.9735946 0.983453 0.9487056 0.9818471 0.997559</code></pre>
+</div>

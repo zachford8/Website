@@ -1,0 +1,396 @@
+---
+title: 'SDS348 - Project 2: Modeling, Testing, and Predicting'
+author: "Zach Ford"
+date: ''
+output:
+  pdf_document: 
+    toc: yes
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+library(tidyverse)
+library(tinytex)
+library(rlang)
+library(mvtnorm)
+library(ggExtra)
+library(dplyr)
+library(ggplot2)
+library(lmtest)
+library(sandwich)
+library(glmnet)
+class_diag<-function(probs,truth){
+  
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  prediction<-ifelse(probs>.5,1,0)
+  acc=mean(truth==prediction)
+  sens=mean(prediction[truth==1]==1)
+  spec=mean(prediction[truth==0]==0)
+  ppv=mean(truth[prediction==1]==1)
+  
+  #CALCULATE EXACT AUC
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+```
+
+# 0. Introduction
+
+>The dataset that I am using for this project contains data on different shots that were taken during different games of the 2014-2015 NBA season. I found this dataset on `www.kaggle.com`. Some notable variables within the dataset are `winorlose`, which determines if the game was won-`W` or lost-`L`. `shot_number` is current number of shots that a player has taken in that specific game. Another variable is `dribbles`, which is the amount of dribbles the player took before the shot. `touch_time` is the amount of time the player possessed the ball before taking the shot. `shot_dist` is the distance from the rim in feet from where the player took the shot. `pts_type` is whether the shot taken by the player was a two-`2` or three-`3` point shot, which is also under the variable `pts`. `shot_result` is whether the player `made` or `missed` the shot, this variable is also in binary form under the variable `fgm` with `1` = `made` and `0` = `missed`. `clost_def_dist` is how close the defender was to the player who attemped the shot in feet. The last notable variable is the `closeest_defender` and `player_name` which are the names of the closest defender as well as the player who took the shot, respectively. To tidy the dataset, I removed all rows that contained an `NA` value as these would not contribute the following statistical tests that I am going to run in this project, I then made all column names lowercase for ease, and I renamed the `w` column to `winorlose` for clairity. Moreover, I also took away `CLOSEST_DEFENDER_PLAYER_ID` and `player_id` which are just redundant variables. I also decieded to add in `totpts` which is just the total points for a specific player within a specific game. Following the tidying, I have a total of 122,502 rows with 20 columns. 
+
+```{R}
+shot_logs<-readr::read_csv("/Users/zachford/Documents/UT Spring 2020/Comp Bio/project2data.csv")
+#Tidying
+shotdat<-shot_logs%>%
+  select(-CLOSEST_DEFENDER_PLAYER_ID,-player_id)%>%
+  drop_na()%>%
+  rename_all(.funs = tolower)%>%
+  rename(winorlose=w)%>%
+  mutate(quarter=as.factor(period))
+
+head(shotdat)
+```
+
+
+# 1. MANOVA/ANOVA
+
+>The MANOVA I decied to run was testing whether `shot number`, `shot clock`, `dribbles`, `touch time`, `shot distance`, and `closest defender distance` means differed across if the shot was a `two` or `three` -pointer. Since the MANOVA was significant, I performed one-way ANOVAs for each each variable to see which ones are significant. However, since my categorical variable is binary, the post-hoc t tests are unnecessary since the significance can be inferred from the one-way ANOVAs. Therefore, the bonferroni correction I used to determined significance is 0.007 because I performed 1 MANOVA and 6 ANOVAs, which is 7 total tests. Using the bonferroni correction, I would infer that `shot clock`, `dribbles`, `touch time`, `shot distance`, and `closest defender distance` are significant with a p-value of <2.2e-16. Additionally, I would infer that `shot number` is not significant with a p-value of 0.01865 which is less than my bonferroni correction of 0.007.
+
+>For the assumptions, I would assume that random sampling is met, but I would assume that independent observations would be violated due to some of samples being taken from the same game together with the same player. I would assume that normality is met because although there is some outliers, most of the data is within a certain mean. Moreover, I would also assume that covariances are not equal between each of the variables. The assumption of linear relationships among DVs would also be violated because most of the variables are going to have some outliers when plotting them. Lastly, multicollinearity would be violated because the most of these variables are more than just closely related. 
+
+>Hypothesis:
+
+>* H~0~ - For the shot number, shot clock, dribbles, touch time, shot distance, and closest defender distance, the means for whether the shot was a two-pointer or three-pointer are equal.
+>* H~A~ - For at least one response variable, at least one group mean different.
+
+```{R}
+#MANOVA
+manshot<-
+  manova(
+    cbind(shot_number,shot_clock,dribbles,
+          touch_time,shot_dist,close_def_dist)~pts_type,data=shotdat)
+summary(manshot) 
+
+#Bonferroni Correction
+0.05/7
+
+#Univarate ANOVAs
+summary.aov(manshot)
+
+#Probability of 1 Type I error
+1-0.95^7
+```
+
+
+# 2. Randomization Test
+
+>The randomization test that I performed determine whether shot distance is the same or different between two of the greatest shooters to ever touch a basketball, Stephen Curry and Klay Thompson. My formal null hypothesis was shot distance mean is the same for Stephen Curry and Klay Thompson. Following the test, I would fail to reject my null hypothesis that shot distance mean is the same between Stephen Curry and Klay Thompson, given that my two-tailed p-value was 0.166 and normal p-value was 0.1664 I included the Welch t-test for comparison which revealed a p-value of 0.1716. 
+
+>Hypothesis:
+
+>* H~0~ - shot distance mean is the same between Stephen Curry and Klay Thompson.
+
+>* H~A~ - shot distance mean differs between Stephen Curry and Klay Thompson.
+
+```{R}
+#Tidying
+shoottest<-shotdat%>%filter(player_name=="stephen curry"| player_name=="klay thompson")
+
+#Calculated mean difference between groups
+shoottest%>%
+  group_by(player_name)%>%
+  summarize(means=mean(shot_dist))%>%
+  summarize(meandiff=diff(means))
+
+#Monte Carlo 
+random2<-vector()
+for(i in 1:5000){
+new2<-data.frame(dist=sample(shoottest$shot_dist),name=shoottest$player_name)
+random2[i]<-mean(new2[new2$name=="stephen curry",]$dist)-
+            mean(new2[new2$name=="klay thompson",]$dist)}
+
+#p-value
+mean(random2>0.5541117 | random2< -0.5541117) #Two-tailed
+mean(random2> 0.5541117)*2 #Normal
+
+#Welch t-test for comparison
+t.test(data=shoottest,shot_dist~player_name)
+
+#Plot
+{hist(random2,main="",ylab=""); abline(v = 0.5541117,col="red")}
+```
+
+
+# 3. Linear Regression Model
+
+>The linear regression model I chose to perform was looking at Lebron James `total points` and determining whether `shot distance` and `quarter/period` had an impact on this variable. 
+
+>Coefficient Estimates: 
+
+>* *Intercept* - Lebron James predicted points total with an average shot distance in the 1st quarter would be 21.066.
+
+>* *q2* - Controlling for shot distance, his point total in the 2nd quarter is 0.111 points lower than in the 1st quarter. 
+
+>* *q3* - Controlling for shot distance, his point total in the 3rd quarter is 0.116 points higher than in the 1st quarter.
+
+>* *q4* - Controlling for shot distance, his point total in the 4th quarter is 0.295 points higher than in the 1st quarter.
+
+>* *q5* - Controlling for shot distance, his point total in the 5th quarter (or overtime) is 9.967 points higher than in the 1st quarter.
+
+>* *sdist_c* - Controlling for the different quarters, for every one unit increase in Lebron's shot distance, his total points went down by 0.07.
+
+>* *sdist_c:q2* - The slope for shot distance on total points is 0.046 higher in the 2nd quarter compared to the 1st quarter.
+
+>* *sdist_c:q3* - The slope for shot distance on total points is 0.153 higher in the 3rd quarter compared to the 1st quarter.
+
+>* *sdist_c:q4* - The slope for shot distance on total points is 0.046 higher in the 4th quarter compared to the 1st quarter.
+
+>* *sdist_c:q5* - The slope for shot distance on total points is 0.046 higher in the 5th quarter (or overtime) compared to the 1st quarter.
+
+>There were no significant changes from before the robust standard errors compared to after. 
+
+>Hypothesis:
+
+>* H~0~ - Controlling for shot distance, the different quarter of a basketball game does not explain variation in a total points for Lebron James.
+
+>* H~A~ - Controlling for the different quarter of a basketball game, shot distance does not explain variation in a total points for Lebron James.
+
+```{R}
+#Tidying
+lebron3<-shotdat%>%filter(player_name=="lebron james")%>%group_by(matchup)%>%mutate(totpts=sum(pts))
+
+#Mean Centering
+lebron3$sdist_c<-lebron3$shot_dist-mean(lebron3$shot_dist)
+
+#Testing
+#Without Interaction
+fit3<-lm(totpts ~ sdist_c + quarter, data=lebron3)
+summary(fit3)
+
+#With Interaction
+fitint3<-lm(totpts ~ sdist_c * quarter, data=lebron3)
+summary(fitint3)
+
+#Regression Plot
+ggplot(fitint3, aes(sdist_c,totpts))+
+  geom_point(aes(color=quarter))+
+  geom_smooth(method="lm", se=F)
+
+#Assumption Plots/Tests
+#Linearity
+resids<-fitint3$residuals
+fitvals<-fitint3$fitted.values
+ggplot()+
+  geom_point(aes(fitvals,resids))+
+  geom_hline(yintercept=0, col="red")
+
+#Normality
+ggplot()+
+  geom_qq(aes(sample=resids))+
+  geom_qq_line(aes(sample=resids), color='red')
+
+#Homoskedasticity
+bptest(fitint3)
+
+#Regression with Robust SEs
+coeftest(fitint3, vcov = vcovHC(fitint3))[,1:2]
+```
+
+
+# 4. Linear Regression Model (Bootstrapping SEs/Residuals)
+
+>Given that there was not much difference between the original p-values/SEs and the robust p-values/SEs, there is a significant difference between those two and the bootstrapping p-values and SEs. Each of the SEs decreased significantly compared to the original and robust SEs that were calculated. There was not much difference between the original p-values and the ones calculated below.
+
+```{R}
+##Bootstrapping SEs
+sdist<-replicate(5000, {
+  boot<-lebron3[sample(nrow(lebron3),replace=T),]
+  fit4a <- lm(totpts ~ sdist_c * quarter, data=boot)
+  coef(fit4a)
+})
+
+sdist %>% t %>% as.data.frame %>% summarize_all(sd)
+
+##Bootstrapping Residuals
+fit4<-lm(totpts ~ sdist_c * quarter, data=lebron3)
+resids<-fit4$residuals
+fitted<-fit4$fitted.values
+  
+resid_resamp<-replicate(5000,{
+  new_resids<-sample(resids,replace=TRUE)
+  lebron3$new_y<-fitted+new_resids
+  fit4<-lm(new_y~sdist_c*quarter, data=lebron3)
+  coef(fit4)
+})
+
+resid_resamp %>% t %>% as.data.frame %>% summarize_all(sd)
+```
+
+
+# 5. Logistic Regression
+
+>The logistic regression model that I chose to run was testing whether `closest defender distance` and which `quarter/period` the shot was taken in had an effect on if the shot was `made` or `missed` for two of the greatest shooters in the game of basketball, Stephen Curry and Klay Thompson.
+
+>Coefficient estimates: 
+
+>* *Intercept* - Odds of a made shot when closest defender distance=0 and the shot was taken in the 1st quarter is 0.856.
+
+>* *Shot_dist* - Controlling for which quarter the shot was taken, for every one additional foot added to how close a defender was when the shot was attempted, odds of a made shot increased by a factor of 1.022. 
+
+>* *q2* - Controlling for shot distance, odds of a made shot in the 2nd quarter are 1.156 times higher than in the 1st quarter.
+
+>* *q3* - Controlling for shot distance, odds of a made shot in the 3rd quarter are 0.985 times higher than in the 1st quarter.
+
+>* *q4* - Controlling for shot distance, odds of a made shot in the 4th quarter are 0.757 times higher than in the 1st quarter.
+
+>* *q5* - Controlling for shot distance, odds of a made shot in the 5th quarter (or overtime) are 1.085 times higher than in the 1st quarter.
+
+>Accuracy, TPR, TNR:
+
+>* *Accuracy* - The overall accuracy was decent, with the proportion of correctly classified made/missed shots being 0.537.
+
+>* *Sensitivity (TPR)* - The overall sensitivity was not the best with the proportion of shots correctly classified as `made` was 0.272.
+
+>* *Specificity (TNR)* - The overall specificity was pretty good with the proportion of shots correctly classified as `missed` was 0.781. 
+
+>ROC Curve/AUC:
+The calculated AUC was 0.54, which is not the greatest and indicates that it is hard to predict whether a shot will be `made` or `missed` by only using how close the closest defender was in feet and which quarter the shot was attempted in. 
+
+```{R}
+#Testing
+fit5<-glm(fgm~close_def_dist+quarter, data=shoottest, family='binomial')
+coef(fit5)
+exp(coef(fit5))
+
+#Confusion Matrix
+shoottest$prob5<-predict(fit5,type="response")
+pred5<-ifelse(shoottest$prob5>.5,1,0)
+table(predict=pred5,truth=shoottest$fgm)%>%addmargins
+
+#Accuracy
+(772+246)/1894
+
+#Sensitivity (TPR)
+mean(shoottest[shoottest$fgm==1,]$prob5>.5)
+
+#Specificity (TNR)
+mean(shoottest[shoottest$fgm==0,]$prob5<.5)
+
+#Density Plot
+shoottest$logit<-predict(fit5,type="link")
+shoottest%>%ggplot()+
+  geom_density(aes(logit,color=fgm,fill=fgm), alpha=.4)+
+  theme(legend.position=c(.85,.85))+
+  geom_vline(xintercept=0)+xlab("logit (log-odds)")+
+  geom_rug(aes(logit,color=fgm))
+
+#ROC Curve
+library(plotROC)
+library(pROC)
+ROCplot<-ggplot(shoottest)+geom_roc(aes(d=fgm, m=prob5), n.cuts=0)+geom_segment(aes(x=0,xend=1,y=0,yend=1),lty=2)
+ROCplot
+
+#AUC
+calc_auc(ROCplot)
+
+#10-Fold CV
+k=10
+
+data5<-shoottest[sample(nrow(shoottest)),]
+folds5<-cut(seq(1:nrow(shoottest)),breaks=k,labels=F)
+
+diags<-NULL
+for(i in 1:k){
+  
+  train<-data5[folds5!=i,] 
+  test<-data5[folds5==i,]
+  truth<-test$fgm
+  
+  fit<-glm(fgm~close_def_dist+quarter,data=train,family="binomial")
+  probs<-predict(fit,newdata = test,type="response")
+  
+  diags<-rbind(diags,class_diag(probs,truth))
+}
+
+summarize_all(diags,mean)
+```
+
+
+# 6. LASSO Regression
+
+>For my LASSO regression model I chose to perform a test that determines which variables would be good predictors of if Lebron James takes a two or three point shot. 
+
+>The variables that were retained in this model were `game_id`, or which team Lebron was playing against. `Period`, or which quarter he attempted the shot in. `Shot_clock`, or what the shot clock was at at the time Lebron attempted the shot. `Touch_time`, or the total time that Lebron was possessing the ball before attempting the shot. `Shot_dist`, or the distance from the basket in feet. Lastly, `close_def_dist`, or how far away the closest defender was in feet.
+
+>Following the 10-fold CV, the results show that the AUC was 0.9974 with an accuracy of 0.9726. Both of these calculated results show that this model fits extremely well and that these variables are extremely good predictors in determining which shot Lebron James is going to attempt. 
+
+```{R}
+#Tidying/Removing categorical variables
+lebron6<-shotdat%>%
+  filter(player_name=="lebron james")%>%
+  mutate(two=ifelse(pts_type=="2",1,0))%>%
+  select_if(is.numeric)%>%
+  select(-fgm,-pts,-pts_type)
+
+#Testing
+y6<-as.matrix(lebron6$two)
+x6<-model.matrix(two~., data=lebron6)[,-1]
+x6<-scale(x6)
+cv6<-cv.glmnet(x6,y6,family="binomial")
+lasso6<-glmnet(x6,y6,family="binomial",lambda = cv6$lambda.1se)
+coef(lasso6)
+
+#10-Fold CV
+k=10
+
+data6<-lebron6[sample(nrow(lebron6)),]
+folds6<-cut(seq(1:nrow(lebron6)),breaks=k,labels=F)
+
+diags<-NULL
+for(i in 1:k){
+  
+  train<-data6[folds6!=i,] 
+  test<-data6[folds6==i,]
+  truth<-test$two
+  
+  fit<-glm(two~game_id+period+shot_clock+touch_time+shot_dist+close_def_dist,data=train,family="binomial")
+  probs<-predict(fit,newdata = test,type="response")
+  
+  diags<-rbind(diags,class_diag(probs,truth))
+}
+
+summarize_all(diags,mean)
+```
+
