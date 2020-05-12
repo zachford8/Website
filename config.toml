@@ -12,8 +12,8 @@ theme = "hugo-sustain"
 
 [params]
   avatar = "profilepic.jpeg"
-  author = "Zachary Ford"
-  description = "Describe your website"
+  author = "Zach Ford"
+  description = "Website about me"
 
   # Custom assets can be linked with their paths relative to static/
   custom_css = []
@@ -24,6 +24,7 @@ theme = "hugo-sustain"
   Email         = "19zmf97@gmail.com"
   Twitter       = "zachford8"
   LinkedIn      = "zachary-ford-678b38174"
+  Facebook      = "zach.ford.35"
 
 ## Main Menu
 [[menu.main]]

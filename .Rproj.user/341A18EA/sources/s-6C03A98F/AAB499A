@@ -7,13 +7,13 @@
     "folds" : "",
     "hash" : "0",
     "id" : "AAB499A",
-    "lastKnownWriteTime" : 1589293121,
-    "last_content_update" : 1589293121976,
+    "lastKnownWriteTime" : 1589310546,
+    "last_content_update" : 1589310546566,
     "path" : "~/Documents/My_Website/themes/hugo-sustain/static/css/main.css",
     "project_path" : "themes/hugo-sustain/static/css/main.css",
     "properties" : {
-        "cursorPosition" : "52,23",
-        "scrollLine" : "0"
+        "cursorPosition" : "80,27",
+        "scrollLine" : "65"
     },
     "read_only" : false,
     "read_only_alternatives" : [
