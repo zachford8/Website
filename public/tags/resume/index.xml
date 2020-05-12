@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>resume on My Projects</title>
+    <title>resume on About me</title>
     <link>/tags/resume/</link>
-    <description>Recent content in resume on My Projects</description>
+    <description>Recent content in resume on About me</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Sun, 02 Oct 2016 22:55:05 -0400</lastBuildDate>
@@ -17,7 +17,7 @@
       <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>
       
       <guid>/resume/</guid>
-      <description> Resume  </description>
+      <description> Resume Hello Kelsi   </description>
     </item>
     
   </channel>
