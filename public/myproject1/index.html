@@ -44,7 +44,7 @@
         
         <li><a href="/projects/">PROJECTS</a></li>
         
-        <li><a href="/resume/">RESUME</a></li>
+        <li><a href="/resume/">ABOUT ME</a></li>
         
       
       </ul>
@@ -72,11 +72,10 @@
               
 
 
-<div id="introduction" class="section level2">
-<h2>1) Introduction:</h2>
-<blockquote>
-<p>The two datasets that I have chosen to use are both from the National Football League (NFL). One of which has attendance data for each football teams from 2000-2019 and the other dataset has standings statistics for each football teams from 2000-2019. I acquired these two datasets through the website github.com. The variables that are within the attendance dataset are team, team name, year, total overall attendance for the year, total home attendance for the year, total away attendance for the year, the week of the season, and attendance for that week whether it was home or away. The variables that are within the standings dataset are team, team name, year, wins for that year, losses for that year, total points scored that year, total points allowed that year, the points differential (points scored – points allowed), margin of victory (points differential/games played), strength of schedule, simple rating, offensive ranking, defensive ranking, if the team made the playoffs, if the team won the Super Bowl. I find these datasets interesting because I am a huge fan of the NFL and I think that I will be able to find many interesting points within these two datasets.</p>
-</blockquote>
+<div id="introduction" class="section level3">
+<h3>1) Introduction:</h3>
+<div id="the-two-datasets-that-i-have-chosen-to-use-are-both-from-the-national-football-league-nfl.-one-of-which-has-attendance-data-for-each-football-teams-from-2000-2019-and-the-other-dataset-has-standings-statistics-for-each-football-teams-from-2000-2019.-i-acquired-these-two-datasets-through-the-website-github.com.-the-variables-that-are-within-the-attendance-dataset-are-team-team-name-year-total-overall-attendance-for-the-year-total-home-attendance-for-the-year-total-away-attendance-for-the-year-the-week-of-the-season-and-attendance-for-that-week-whether-it-was-home-or-away.-the-variables-that-are-within-the-standings-dataset-are-team-team-name-year-wins-for-that-year-losses-for-that-year-total-points-scored-that-year-total-points-allowed-that-year-the-points-differential-points-scored-points-allowed-margin-of-victory-points-differentialgames-played-strength-of-schedule-simple-rating-offensive-ranking-defensive-ranking-if-the-team-made-the-playoffs-if-the-team-won-the-super-bowl.-i-find-these-datasets-interesting-because-i-am-a-huge-fan-of-the-nfl-and-i-think-that-i-will-be-able-to-find-many-interesting-points-within-these-two-datasets." class="section level6">
+<h6>The two datasets that I have chosen to use are both from the National Football League (NFL). One of which has attendance data for each football teams from 2000-2019 and the other dataset has standings statistics for each football teams from 2000-2019. I acquired these two datasets through the website github.com. The variables that are within the attendance dataset are team, team name, year, total overall attendance for the year, total home attendance for the year, total away attendance for the year, the week of the season, and attendance for that week whether it was home or away. The variables that are within the standings dataset are team, team name, year, wins for that year, losses for that year, total points scored that year, total points allowed that year, the points differential (points scored – points allowed), margin of victory (points differential/games played), strength of schedule, simple rating, offensive ranking, defensive ranking, if the team made the playoffs, if the team won the Super Bowl. I find these datasets interesting because I am a huge fan of the NFL and I think that I will be able to find many interesting points within these two datasets.</h6>
 <pre class="r"><code>library(tidyverse)
 library(dplyr)
 library(tinytex)
@@ -84,16 +83,16 @@ library(rlang)
 attendance &lt;- readr::read_csv(&#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-04/attendance.csv&#39;)
 standings &lt;- readr::read_csv(&#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-04/standings.csv&#39;)</code></pre>
 </div>
-<div id="untidying-then-tidying" class="section level2">
-<h2>2) Untidying then Tidying</h2>
-<blockquote>
-<p>Since both of these datasets were already tidy, the following two sets of code use <code>pivot_longer</code> and <code>pivot_wider</code>to untidy then make the two datasets tidy again.</p>
-</blockquote>
-<div id="a-standings-dataset" class="section level3">
-<h3>2a) Standings dataset</h3>
-<blockquote>
-<p>For this dataset, I used <code>pivot_longer</code> to move the data from playoffs column and sb_winner column to a new column called “name” and moved the values within each of the playoffs and sb_winner columns to a column called “value.” Then, I used <code>pivot_wider</code> to move the values in the “name” column back to their own columns and moved the values within “value” column back to the playoffs and sb_winner columns.</p>
-</blockquote>
+</div>
+<div id="untidying-then-tidying" class="section level3">
+<h3>2) Untidying then Tidying</h3>
+<div id="since-both-of-these-datasets-were-already-tidy-the-following-two-sets-of-code-use-pivot_longer-and-pivot_widerto-untidy-then-make-the-two-datasets-tidy-again." class="section level6">
+<h6>Since both of these datasets were already tidy, the following two sets of code use <code>pivot_longer</code> and <code>pivot_wider</code>to untidy then make the two datasets tidy again.</h6>
+</div>
+<div id="a-standings-dataset" class="section level5">
+<h5>2a) Standings dataset</h5>
+<div id="for-this-dataset-i-used-pivot_longer-to-move-the-data-from-playoffs-column-and-sb_winner-column-to-a-new-column-called-name-and-moved-the-values-within-each-of-the-playoffs-and-sb_winner-columns-to-a-column-called-value.-then-i-used-pivot_wider-to-move-the-values-in-the-name-column-back-to-their-own-columns-and-moved-the-values-within-value-column-back-to-the-playoffs-and-sb_winner-columns." class="section level6">
+<h6>For this dataset, I used <code>pivot_longer</code> to move the data from playoffs column and sb_winner column to a new column called “name” and moved the values within each of the playoffs and sb_winner columns to a column called “value.” Then, I used <code>pivot_wider</code> to move the values in the “name” column back to their own columns and moved the values within “value” column back to the playoffs and sb_winner columns.</h6>
 <pre class="r"><code>nflstand&lt;-standings%&gt;%
   pivot_longer(cols=c(playoffs, sb_winner), 
                names_to = &#39;name&#39;, 
@@ -102,11 +101,11 @@ newnflstand&lt;-nflstand%&gt;%
   pivot_wider(names_from = &#39;name&#39;, 
               values_from = &#39;value&#39;)</code></pre>
 </div>
-<div id="b-attendance-dataset" class="section level3">
-<h3>2b) Attendance dataset</h3>
-<blockquote>
-<p>For this dataset, I used <code>pivot_longer</code> to move the data from the total attendance, home attendance, away attendance, and weekly attendance columns to a new column called “name” and moved the values within each of these columns to a column called “value.” Then, I used <code>pivot_wider</code> to move the values in the “name” column back to their own columns and moved the values within “value” column back to the total attendance, home/away attendance, and weekly attendance columns.</p>
-</blockquote>
+</div>
+<div id="b-attendance-dataset" class="section level5">
+<h5>2b) Attendance dataset</h5>
+<div id="for-this-dataset-i-used-pivot_longer-to-move-the-data-from-the-total-attendance-home-attendance-away-attendance-and-weekly-attendance-columns-to-a-new-column-called-name-and-moved-the-values-within-each-of-these-columns-to-a-column-called-value.-then-i-used-pivot_wider-to-move-the-values-in-the-name-column-back-to-their-own-columns-and-moved-the-values-within-value-column-back-to-the-total-attendance-homeaway-attendance-and-weekly-attendance-columns." class="section level6">
+<h6>For this dataset, I used <code>pivot_longer</code> to move the data from the total attendance, home attendance, away attendance, and weekly attendance columns to a new column called “name” and moved the values within each of these columns to a column called “value.” Then, I used <code>pivot_wider</code> to move the values in the “name” column back to their own columns and moved the values within “value” column back to the total attendance, home/away attendance, and weekly attendance columns.</h6>
 <pre class="r"><code>nflatt&lt;-attendance%&gt;%
   pivot_longer(cols=c(-team,-team_name, -year, -week), 
                names_to = &#39;name&#39;, 
@@ -116,30 +115,31 @@ newnflatt&lt;-nflatt%&gt;%
               values_from = &#39;value&#39;)</code></pre>
 </div>
 </div>
-<div id="c-joining-both-of-the-datasets" class="section level2">
-<h2>2c) Joining both of the datasets</h2>
-<blockquote>
-<p>The type of join that I used was a <code>left_join</code> to join the standings dataset and the attendance dataset. This type of join keeps everything in the standings dataset but combines the statistics within the attendance dataset by team.</p>
-</blockquote>
-<blockquote>
-<p>In the attendance dataset, I chose to drop the weekly attendance and weeks that were originally in the attendance dataset since in the standings dataset everything is separated by season.</p>
-</blockquote>
+<div id="c-joining-both-of-the-datasets" class="section level5">
+<h5>2c) Joining both of the datasets</h5>
+<div id="the-type-of-join-that-i-used-was-a-left_join-to-join-the-standings-dataset-and-the-attendance-dataset.-this-type-of-join-keeps-everything-in-the-standings-dataset-but-combines-the-statistics-within-the-attendance-dataset-by-team." class="section level6">
+<h6>The type of join that I used was a <code>left_join</code> to join the standings dataset and the attendance dataset. This type of join keeps everything in the standings dataset but combines the statistics within the attendance dataset by team.</h6>
+</div>
+<div id="in-the-attendance-dataset-i-chose-to-drop-the-weekly-attendance-and-weeks-that-were-originally-in-the-attendance-dataset-since-in-the-standings-dataset-everything-is-separated-by-season." class="section level6">
+<h6>In the attendance dataset, I chose to drop the weekly attendance and weeks that were originally in the attendance dataset since in the standings dataset everything is separated by season.</h6>
 <pre class="r"><code>boomatt&lt;-newnflatt%&gt;%
   select(team, team_name, year, total, home, away)%&gt;%
   unite(team, team_name, col=&#39;team&#39;, sep=&#39; &#39;)%&gt;%
   distinct(total,.keep_all = TRUE)</code></pre>
-<blockquote>
-<p>In the standings dataset, I chose to drop the strength of schedule and simple rating because both of those statistics are calculated by using the points_scored and points_allowed which I have already included.</p>
-</blockquote>
+</div>
+<div id="in-the-standings-dataset-i-chose-to-drop-the-strength-of-schedule-and-simple-rating-because-both-of-those-statistics-are-calculated-by-using-the-points_scored-and-points_allowed-which-i-have-already-included." class="section level6">
+<h6>In the standings dataset, I chose to drop the strength of schedule and simple rating because both of those statistics are calculated by using the points_scored and points_allowed which I have already included.</h6>
 <pre class="r"><code>boomstand&lt;-newnflstand%&gt;%
   select(-strength_of_schedule,-simple_rating)%&gt;%
   unite(team, team_name, col = &#39;team&#39;, sep=&#39; &#39;)
 boomfull&lt;-left_join(boomstand, boomatt)</code></pre>
 </div>
-<div id="create-summary-stats-using-filter-select-arrange-mutate-with-each-stat-using-group_by-and-summarize" class="section level2">
-<h2>3) Create summary stats using <code>filter</code>, <code>select</code>, <code>arrange</code>, <code>mutate</code> with each stat using <code>group_by</code> and <code>summarize</code></h2>
-<div id="which-teamteams-has-the-most-wins" class="section level3">
-<h3>3.1) Which team/teams has the most wins?</h3>
+</div>
+</div>
+<div id="create-summary-stats-using-filter-select-arrange-mutate-with-each-stat-using-group_by-and-summarize" class="section level3">
+<h3>3) Create summary stats using <code>filter</code>, <code>select</code>, <code>arrange</code>, <code>mutate</code> with each stat using <code>group_by</code> and <code>summarize</code></h3>
+<div id="which-teamteams-has-the-most-wins" class="section level4">
+<h4>3.1) Which team/teams has the most wins?</h4>
 <pre class="r"><code>boomfull%&gt;%
   group_by(team)%&gt;%
   summarize(totwins=sum(wins))%&gt;%
@@ -159,8 +159,8 @@ boomfull&lt;-left_join(boomstand, boomatt)</code></pre>
 ## 10 Dallas Cowboys           168
 ## # … with 24 more rows</code></pre>
 </div>
-<div id="how-many-teams-in-the-top-5th-percentile-of-total-attendance-have-won-the-superbowl" class="section level3">
-<h3>3.2) How many teams in the top 5th percentile of total attendance have won the superbowl?</h3>
+<div id="how-many-teams-in-the-top-5th-percentile-of-total-attendance-have-won-the-superbowl" class="section level4">
+<h4>3.2) How many teams in the top 5th percentile of total attendance have won the superbowl?</h4>
 <pre class="r"><code>boomfull%&gt;%
   mutate(total_ptile=ntile(total, 100))%&gt;%
   filter(total_ptile&gt;95 &amp; sb_winner==&#39;Won Superbowl&#39;)%&gt;%
@@ -171,8 +171,8 @@ boomfull&lt;-left_join(boomstand, boomatt)</code></pre>
 ## 1 New York Giants  2007
 ## 2 New York Giants  2011</code></pre>
 </div>
-<div id="which-team-has-won-the-least-amount-of-games-and-won-the-superbowl" class="section level3">
-<h3>3.3) Which team has won the least amount of games and won the superbowl?</h3>
+<div id="which-team-has-won-the-least-amount-of-games-and-won-the-superbowl" class="section level4">
+<h4>3.3) Which team has won the least amount of games and won the superbowl?</h4>
 <pre class="r"><code>boomfull%&gt;%
   filter(sb_winner==&#39;Won Superbowl&#39;)%&gt;%
   group_by(team, year)%&gt;%
@@ -203,8 +203,8 @@ boomfull&lt;-left_join(boomstand, boomatt)</code></pre>
 ## 19 New England Patriots  2004       14
 ## 20 New England Patriots  2016       14</code></pre>
 </div>
-<div id="which-year-has-the-highest-total-attendance" class="section level3">
-<h3>3.4) Which year has the highest total attendance?</h3>
+<div id="which-year-has-the-highest-total-attendance" class="section level4">
+<h4>3.4) Which year has the highest total attendance?</h4>
 <pre class="r"><code>boomfull%&gt;%
   group_by(year)%&gt;%
   summarize(yearly_total=sum(total))%&gt;%
@@ -233,8 +233,8 @@ boomfull&lt;-left_join(boomstand, boomatt)</code></pre>
 ## 19  2001     32613778
 ## 20  2011           NA</code></pre>
 </div>
-<div id="which-superbowl-winning-team-had-the-highest-total-attendance-throughtout-the-season" class="section level3">
-<h3>3.5) Which superbowl winning team had the highest total attendance throughtout the season?</h3>
+<div id="which-superbowl-winning-team-had-the-highest-total-attendance-throughtout-the-season" class="section level4">
+<h4>3.5) Which superbowl winning team had the highest total attendance throughtout the season?</h4>
 <pre class="r"><code>boomfull%&gt;%
   filter(sb_winner==&#39;Won Superbowl&#39;)%&gt;%
   group_by(team, year)%&gt;%
@@ -265,8 +265,8 @@ boomfull&lt;-left_join(boomstand, boomatt)</code></pre>
 ## 19 Indianapolis Colts    2006   1028634
 ## 20 New England Patriots  2001    977717</code></pre>
 </div>
-<div id="correlation-points-scored-and-points-allowed-vs.off.-ranking-and-def.-ranking" class="section level3">
-<h3>3.6) Correlation points scored and points allowed vs. Off. ranking and Def. ranking</h3>
+<div id="correlation-points-scored-and-points-allowed-vs.off.-ranking-and-def.-ranking" class="section level4">
+<h4>3.6) Correlation points scored and points allowed vs. Off. ranking and Def. ranking</h4>
 <pre class="r"><code>boomfull%&gt;%
   select(points_for, points_against, offensive_ranking, defensive_ranking)%&gt;%
   cor()</code></pre>
@@ -276,8 +276,8 @@ boomfull&lt;-left_join(boomstand, boomatt)</code></pre>
 ## offensive_ranking  0.9517868     -0.2459601         1.0000000         0.2245290
 ## defensive_ranking  0.1974664     -0.9286826         0.2245290         1.0000000</code></pre>
 </div>
-<div id="which-team-has-scored-the-most-points-from-2000-2019" class="section level3">
-<h3>3.7) Which team has scored the most points from 2000-2019?</h3>
+<div id="which-team-has-scored-the-most-points-from-2000-2019" class="section level4">
+<h4>3.7) Which team has scored the most points from 2000-2019?</h4>
 <pre class="r"><code>boomfull%&gt;%
   group_by(team)%&gt;%
   summarize(tot_points=sum(points_for))%&gt;%
@@ -297,8 +297,8 @@ boomfull&lt;-left_join(boomstand, boomatt)</code></pre>
 ## 10 Minnesota Vikings          7257
 ## # … with 24 more rows</code></pre>
 </div>
-<div id="teams-who-have-won-the-superbowl-and-how-many-playoff-appearances-they-have" class="section level3">
-<h3>3.8) Teams who have won the superbowl and how many playoff appearances they have?</h3>
+<div id="teams-who-have-won-the-superbowl-and-how-many-playoff-appearances-they-have" class="section level4">
+<h4>3.8) Teams who have won the superbowl and how many playoff appearances they have?</h4>
 <pre class="r"><code>play&lt;-boomfull%&gt;%
   filter(playoffs==&#39;Playoffs&#39;)%&gt;%
   group_by(team)%&gt;%
@@ -329,8 +329,8 @@ inner_join(sb, play)%&gt;%
 ## 11 New York Giants              2           8
 ## 12 Tampa Bay Buccaneers         1           5</code></pre>
 </div>
-<div id="correlation-between-points-allowed-points-scored-playoffs-and-superbowl" class="section level3">
-<h3>3.9) Correlation between points allowed, points scored, playoffs, and superbowl?</h3>
+<div id="correlation-between-points-allowed-points-scored-playoffs-and-superbowl" class="section level4">
+<h4>3.9) Correlation between points allowed, points scored, playoffs, and superbowl?</h4>
 <pre class="r"><code>boom3.9&lt;-boomfull%&gt;%
   mutate(playoffs=case_when(playoffs==&#39;Playoffs&#39;~&#39;1&#39;, playoffs==&#39;No Playoffs&#39;~ &#39;0&#39;, TRUE~playoffs), playoffs=as.numeric(playoffs))%&gt;%
   mutate(sb_winner=case_when(sb_winner==&#39;Won Superbowl&#39;~&#39;1&#39;, sb_winner==&#39;No Superbowl&#39;~ &#39;0&#39;, TRUE~sb_winner), sb_winner=as.numeric(sb_winner))
@@ -344,8 +344,8 @@ boom3.9%&gt;%
 ## playoffs        0.5625480     -0.5315654  1.0000000  0.2316630
 ## sb_winner       0.1362052     -0.2025224  0.2316630  1.0000000</code></pre>
 </div>
-<div id="correlation-between-margin-of-victory-and-playoff-and-superbowl" class="section level3">
-<h3>3.10) Correlation between margin of victory and playoff and superbowl</h3>
+<div id="correlation-between-margin-of-victory-and-playoff-and-superbowl" class="section level4">
+<h4>3.10) Correlation between margin of victory and playoff and superbowl</h4>
 <pre class="r"><code>boom3.10&lt;-boomfull%&gt;%
   mutate(playoffs=case_when(playoffs==&#39;Playoffs&#39;~&#39;1&#39;, playoffs==&#39;No Playoffs&#39;~ &#39;0&#39;, TRUE~playoffs), playoffs=as.numeric(playoffs))%&gt;%
   mutate(sb_winner=case_when(sb_winner==&#39;Won Superbowl&#39;~&#39;1&#39;, sb_winner==&#39;No Superbowl&#39;~ &#39;0&#39;, TRUE~sb_winner), sb_winner=as.numeric(sb_winner))
@@ -359,20 +359,17 @@ boom3.10%&gt;%
 ## sb_winner                 0.2155921 0.2316630 1.0000000</code></pre>
 </div>
 </div>
-<div id="visiualizing" class="section level2">
-<h2>4) Visiualizing</h2>
-<div id="correlation-matrix-heatmap-between-numeric-variables" class="section level3">
-<h3>4.1) Correlation matrix heatmap between numeric variables</h3>
+<div id="visiualizing" class="section level3">
+<h3>4) Visiualizing</h3>
+<div id="correlation-matrix-heatmap-between-numeric-variables" class="section level4">
+<h4>4.1) Correlation matrix heatmap between numeric variables</h4>
 <pre class="r"><code>vis1&lt;-boomfull%&gt;%select(-team,-playoffs,-sb_winner, -total, -home, -away)%&gt;%cor()</code></pre>
 <pre class="r"><code>library(GGally)
 ggcorr(vis1)</code></pre>
 <p><img src="/myproject1_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="section" class="section level3">
-<h3>4.2)</h3>
-<blockquote>
-<p>This scatterplot has the total away attendance for each season on the y-axis, the total home attendance for each season on the x-axis, and each color on the scatterplot correlates to each team which is labeled at the top of the plot.</p>
-</blockquote>
+<div id="this-scatterplot-has-the-total-away-attendance-for-each-season-on-the-y-axis-the-total-home-attendance-for-each-season-on-the-x-axis-and-each-color-on-the-scatterplot-correlates-to-each-team-which-is-labeled-at-the-top-of-the-plot." class="section level4">
+<h4>4.2) This scatterplot has the total away attendance for each season on the y-axis, the total home attendance for each season on the x-axis, and each color on the scatterplot correlates to each team which is labeled at the top of the plot.</h4>
 <pre class="r"><code>ggplot(boomfull, aes(x=home, y=away, color=team))+
   geom_point(size=1.5)+
   ylab(&quot;Away Attendance for the Season&quot;)+
@@ -384,11 +381,8 @@ ggcorr(vis1)</code></pre>
 <p><img src="/myproject1_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p><em>Findings from this scatterplot show that the Dallas Cowboys have the highest total home attendance, no shock there. I also thought it was interesting that there are certain teams with outlier home attendance numbers while some teams had outlier away attendance numbers.</em></p>
 </div>
-<div id="section-1" class="section level3">
-<h3>4.3)</h3>
-<blockquote>
-<p>This barplot shows the relationship between the mean wins over each season and if the teams made the playoffs or not. The blue bars are the mean wins if the team made the playoffs while the red bars show the mean wins if the team missed the playoffs.</p>
-</blockquote>
+<div id="this-barplot-shows-the-relationship-between-the-mean-wins-over-each-season-and-if-the-teams-made-the-playoffs-or-not.-the-blue-bars-are-the-mean-wins-if-the-team-made-the-playoffs-while-the-red-bars-show-the-mean-wins-if-the-team-missed-the-playoffs." class="section level4">
+<h4>4.3) This barplot shows the relationship between the mean wins over each season and if the teams made the playoffs or not. The blue bars are the mean wins if the team made the playoffs while the red bars show the mean wins if the team missed the playoffs.</h4>
 <pre class="r"><code>ggplot(boomfull, aes(x=team, y=wins, fill=playoffs))+
   geom_bar(stat=&#39;summary&#39;, fun.y=&quot;mean&quot;, position = &#39;dodge&#39;)+
   geom_errorbar(stat=&quot;summary&quot;, position=&quot;dodge&quot;)+
@@ -400,8 +394,8 @@ ggcorr(vis1)</code></pre>
 <p><em>Some interesting findings from this plot show that both of the Los Angeles teams, the Rams and Chargers, had the most wins in their missed playoffs seasons. Another finding is that there is a clear wins difference between teams that made the playoffs that season and if they did not.</em></p>
 </div>
 </div>
-<div id="dimensionality-reduction" class="section level2">
-<h2>5) Dimensionality Reduction</h2>
+<div id="dimensionality-reduction" class="section level3">
+<h3>5) Dimensionality Reduction</h3>
 <pre class="r"><code>library(cluster)
 nfl&lt;-boomfull%&gt;%select(-team,-playoffs,-sb_winner)%&gt;%mutate_if(is.character, as.factor)
 nflgower&lt;-daisy(nfl, metric = &quot;gower&quot;)

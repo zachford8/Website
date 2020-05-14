@@ -7,7 +7,7 @@
     <meta name="author" content="Zach Ford" />
     <meta name="description" content="Website about me">
     <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
-    <title>Hello R Markdown</title>
+    <title>Using Python in RStudio</title>
     <meta name="generator" content="Hugo 0.70.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/css/main.css" />
@@ -44,7 +44,7 @@
         
         <li><a href="/projects/">PROJECTS</a></li>
         
-        <li><a href="/resume/">RESUME</a></li>
+        <li><a href="/resume/">ABOUT ME</a></li>
         
       
       </ul>
@@ -56,19 +56,19 @@
       <div class="container">
         <div class="blog-post">
           <h3>
-            <strong><a href="/blog/2015-07-23-r-rmarkdown/">Hello R Markdown</a></strong>
+            <strong><a href="/blog/2015-07-23-r-rmarkdown/">Using Python in RStudio</a></strong>
           </h3>
         </div>
         <div class="blog-title">
           <h4>
-          July 23, 2015
+          May 14, 2020
             &nbsp;&nbsp;
             
             <span class="label label-success">R Markdown</span>
             
-            <span class="label label-success">plot</span>
+            <span class="label label-success">python</span>
             
-            <span class="label label-success">regression</span>
+            <span class="label label-success">regex</span>
             
           </h4>
         </div>
@@ -78,43 +78,42 @@
               
 
 
-<div id="r-markdown" class="section level1">
-<h1>R Markdown</h1>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>You can embed an R code chunk like this:</p>
-<pre class="r"><code>summary(cars)
-##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00
-fit &lt;- lm(dist ~ speed, data = cars)
-fit
-## 
-## Call:
-## lm(formula = dist ~ speed, data = cars)
-## 
-## Coefficients:
-## (Intercept)        speed  
-##     -17.579        3.932</code></pre>
+<div id="using-python-in-rstudio" class="section level2">
+<h2>Using python in RStudio</h2>
+<div id="think-about-the-last-time-you-were-using-rstudio-and-needed-to-use-python-so-you-could-be-able-to-run-regular-expression-on-your-data.-well-the-time-has-come-all-thanks-to-the-reticulate-package-and-reading-through-this-post.-the-first-step-is-to-read-in-the-reticulate-package-just-like-you-would-with-any-other-r-package.-also-in-order-for-this-to-work-properly-you-must-be-using-an-r-markdown-document." class="section level6">
+<h6>Think about the last time you were using RStudio and needed to use python so you could be able to run regular expression on your data. Well, the time has come all thanks to the <code>reticulate</code> package and reading through this post. The first step is to read in the <code>reticulate</code> package just like you would with any other R package. Also, in order for this to work properly you must be using an R Markdown document.</h6>
+<pre class="r"><code>library(reticulate)</code></pre>
 </div>
-<div id="including-plots" class="section level1">
-<h1>Including Plots</h1>
-<p>You can also embed plots. See Figure <a href="#fig:pie">1</a> for example:</p>
-<pre class="r"><code>par(mar = c(0, 1, 0, 1))
-pie(
-  c(280, 60, 20),
-  c(&#39;Sky&#39;, &#39;Sunny side of pyramid&#39;, &#39;Shady side of pyramid&#39;),
-  col = c(&#39;#0292D8&#39;, &#39;#F7EA39&#39;, &#39;#C4B632&#39;),
-  init.angle = -50, border = NA
-)</code></pre>
-<div class="figure"><span id="fig:pie"></span>
-<img src="/blog/2015-07-23-r-rmarkdown_files/figure-html/pie-1.png" alt="A fancy pie chart." width="672" />
-<p class="caption">
-Figure 1: A fancy pie chart.
-</p>
+<div id="after-reading-in-this-package-all-you-have-to-if-you-want-to-use-python-code-is-change-r-to-python-at-the-top-of-the-r-markdown-code-chunk-and-there-you-have-it" class="section level6">
+<h6>After reading in this package, all you have to if you want to use python code is change <code>{r}</code> to <code>{python}</code> at the top of the R Markdown code chunk and there you have it!</h6>
+<pre class="r"><code># In R
+wow&lt;-&quot;How cool&quot;</code></pre>
+<pre class="python"><code># In python
+woah=&quot;is this&quot;</code></pre>
+<pre class="python"><code>#Calling R using python
+print(r.wow,woah)</code></pre>
+<pre><code>## (&#39;How cool&#39;, &#39;is this&#39;)</code></pre>
+<pre class="r"><code># Calling python using R
+c(wow,py$woah)</code></pre>
+<pre><code>## [1] &quot;How cool&quot; &quot;is this&quot;</code></pre>
+</div>
+</div>
+<div id="regex-using-both-r-and-python" class="section level2">
+<h2>Regex using both R and python</h2>
+<div id="now-lets-try-doing-some-regular-expression-using-both-r-and-python.-lets-say-that-we-have-ip-address-data-in-r-that-we-would-like-to-clean-tidy-up-using-python." class="section level6">
+<h6>Now, let’s try doing some regular expression using both R and python. Let’s say that we have IP address data in R that we would like to clean tidy up using python.</h6>
+<pre class="r"><code># In R
+IP&lt;-&quot;Jan 13 00:48:59: DROP service 68-&gt;67(udp) from 213.92.153.167 to 69.43.107.219, prefix: spoof iana-0/8 (in: eth0 69.43.112.233(38:f8:b7:90:45:92):68 -&gt; 217.70.100.113(00:21:87:79:9c:d9):67 UDP len:576 ttl:64) Jan 13 12:02:48: ACCEPT service dns from 74.125.186.208 to firewall(pub-nic-dns), prefix: none (in: eth0 74.125.186.208(00:1a:e3:52:5d:8e):36008 -&gt; 140.105.63.158(00:1a:9a:86:2e:62):53 UDP len:82 ttl:38) Jan 13 17:44:52: DROP service 68-&gt;67(udp) from 172.45.240.237 to 217.70.177.60, prefix: spoof iana-0/8 (in: eth0 216.34.90.16(00:21:91:fe:a2:6f):68 -&gt; 69.43.85.253(00:07:e1:7c:53:db):67 UDP len:328 ttl:64) Jan 13 17:52:08: ACCEPT service http from 213.121.184.130 to firewall(pub-nic), prefix: none (in: eth0 213.121.184.130(00:05:2e:6a:a4:14):8504 -&gt; 140.105.63.164(00:60:11:92:ed:1b):80 TCP flags: ****S* len:52 ttl:109) Jan 14 04:56:08: DROP service 68-&gt;67(udp) from 217.70.196.185 to 217.70.92.217, prefix: spoof iana-0/8 (in: eth0 69.43.195.65(00:26:f4:fd:77:d1):68 -&gt; 172.45.101.249(bc:b8:52:d0:55:33):67 UDP len:576 ttl:64) Jan 14 06:03:01: DROP service 68-&gt;67(udp) from 217.70.20.228 to 213.92.27.87, prefix: (in: eth0 216.34.214.4(0c:71:5d:52:6f:65):68 -&gt; 172.45.70.44(00:00:6b:ed:5e:cf):67 UDP len:328 ttl:64) Jan 12 17:19:19: DROP service 68-&gt;67(udp) from 213.92.192.102 to 216.34.131.104, prefix: (in: eth0 213.92.247.248(00:26:0c:9c:60:d1):68 -&gt; 69.43.186.115(00:00:9a:48:ab:b8):67 UDP len:576 ttl:64) Jan 13 10:03:14: DROP service 68-&gt;67(udp) from 213.92.20.178 to 216.34.129.47, prefix: (in: eth0 213.92.173.212(00:18:12:c1:5a:a4):68 -&gt; 172.45.188.138(3c:83:b5:65:85:ba):67 UDP len:328 ttl:64) Jan 13 13:53:53: DROP service 68-&gt;67(udp) from 213.92.94.147 to 172.45.117.37, prefix: (in: eth0 213.92.191.188(00:50:a6:df:da:0e):68 -&gt; 213.92.8.108(08:00:8c:1a:3d:d9):67 UDP len:328 ttl:64) Jan 13 22:37:54: ACCEPT service dns from 65.55.37.37 to firewall(pub-nic-dns), prefix: (in: eth0 65.55.37.37(00:24:33:8e:ae:b2):12031 -&gt; 140.105.63.158(00:06:f8:c3:60:a4):53 UDP len:69 ttl:51) Jan 14 03:39:10: ACCEPT service dns from 66.249.66.127 to firewall(pub-nic-dns), prefix: (in: eth0 66.249.66.127(00:18:f5:63:84:7c):46293 -&gt; 140.105.63.158(00:0f:07:cb:10:91):53 UDP len:68 ttl:42) Jan 14 06:23:28: DROP service 68-&gt;67(udp) from 216.34.233.123 to 217.70.226.162, prefix: (in: eth0 217.70.30.115(cc:b2:55:30:fd:ff):68 -&gt; 69.43.103.96(00:03:10:58:1c:f9):67 UDP len:328 ttl:64)&quot;</code></pre>
+<pre class="python"><code># In python
+import re
+re.findall(r&quot;\d{2}\:\w{2}\:\w{2}\:\w{2}\:\w{2}\:\w{2}&quot;,r.IP)</code></pre>
+<pre><code>## [&#39;38:f8:b7:90:45:92&#39;, &#39;00:21:87:79:9c:d9&#39;, &#39;00:1a:e3:52:5d:8e&#39;, &#39;00:1a:9a:86:2e:62&#39;, &#39;00:21:91:fe:a2:6f&#39;, &#39;00:07:e1:7c:53:db&#39;, &#39;00:05:2e:6a:a4:14&#39;, &#39;00:60:11:92:ed:1b&#39;, &#39;00:26:f4:fd:77:d1&#39;, &#39;00:00:6b:ed:5e:cf&#39;, &#39;00:26:0c:9c:60:d1&#39;, &#39;00:00:9a:48:ab:b8&#39;, &#39;00:18:12:c1:5a:a4&#39;, &#39;00:50:a6:df:da:0e&#39;, &#39;08:00:8c:1a:3d:d9&#39;, &#39;00:24:33:8e:ae:b2&#39;, &#39;00:06:f8:c3:60:a4&#39;, &#39;00:18:f5:63:84:7c&#39;, &#39;00:0f:07:cb:10:91&#39;, &#39;00:03:10:58:1c:f9&#39;]</code></pre>
+</div>
+<div id="now-lets-say-that-you-have-different-types-of-website-data-in-r-that-you-would-like-to-comb-through-using-python." class="section level6">
+<h6>Now let’s say that you have different types of website data in R that you would like to comb through using python.</h6>
+<pre class="r"><code>web&lt;-&quot;&lt;http://www.classmates.com/go/e/200988231/CC123101BT/CM00&gt; &lt;http://graphics.classmates.com/graphics/spacer.gif&gt; &lt;http://graphics.classmates.com/graphics/sp You have received this email because the requester specified you as their Manager. Please click http://itcapps.corp.enron.com/srrs/auth/emailLink.asp?ID=000000000053239&amp;Page=Approval to review and act upon this request.     Request ID: 000000000053239 Request Create Date ronOnline.   The following User ID and Password will give you access to live prices on the web-site http://www.enrononline.com.  User ID: ADM40601 Password: WELCOME!   (note these are case sensitive)    Please keep your User I &lt;http://www.classmates.com/go/e/200988231/CC122401BC/CM00&gt;  &lt;http://graphics.classmates.com/graphics/spacer.gif&gt; &lt;http://graphics.classmates.com/graphics/sp http://www.btinternet.com/~pir8/arnie/n, just click on the following hyperlink and complete the order form by Tuesday February 12, 2002.  http://zzz1.net/rd/rd.asp?ZXU=562&amp;ZXD=1471085&amp;UID=1471085  If you cannot link directly to the web site, simply cut and paste the address listed above into yo been successful getting in the group. To access the group should go to your web browser and type in http://www.egroups.com  The screen should show that you are a member of smu-betas group. When you replied to the original mber and password. For more details on how to log-on to eHRonline, see step-by-step instructions at http://isc.enron.com/site/doclibrary/user/ 2. Navigate to the pay advice using the following navigation menus: ? Pay Information ? Paycheck In addition to World Markets Energy information &lt;http://esource.enron.com/worldmarket.asp&gt; and Country Analysis and Forecasting, &lt;http://esource.enron.com/worldmarket_CountryAnalysis.asp&gt; &lt;http://ad.doubleclick.net/clk;3549492;6600300;c?http://www.sportingbetusa.com/english/casino/casinonew-fr.asp?isLogged=notlogged&gt; A WEEKENDPAIR-A-DICE &lt;http://ad.doubleclick.net/clk;3549492;6600300;c?http://www.sportingbetusa.c Mr. Skilling:  Your P number is P00500599.  For your convenience, you can also go to http://isc.enron.com/site/ under Site Highlights and reset your password or find your number.   Thanks, Randi Howard ISC RT-  The new URL for the El Paso data scrape is: http://172.17.172.62/rt/current.asp  OR   John Oh Enron North America 503.464.5066 121 SW Salmon Street  503.701.1160 (cell) 3WTC 0306 Hawthorne.  The show is Friday Jamuary 11th 9ish.  We certainly hope to see you there. Check out &lt;http://www.24bom.com&gt; for more show dates and other fun crap.    C-U-THER! November 09, 2001 (Trade Date of Thursday, November 08, 2001)  Click here to access index history &lt;http://www.intcx.com/SubscriberServlet/subscriberservlet.class?operation=powerIndexForm&amp;hub=All&gt;.&quot;</code></pre>
+<pre class="python"><code>re.findall(r&quot;http://.*?\s&quot;,r.web)</code></pre>
+<pre><code>## [&#39;http://www.classmates.com/go/e/200988231/CC123101BT/CM00&gt; &#39;, &#39;http://graphics.classmates.com/graphics/spacer.gif&gt; &#39;, &#39;http://graphics.classmates.com/graphics/sp &#39;, &#39;http://itcapps.corp.enron.com/srrs/auth/emailLink.asp?ID=000000000053239&amp;Page=Approval &#39;, &#39;http://www.enrononline.com. &#39;, &#39;http://www.classmates.com/go/e/200988231/CC122401BC/CM00&gt; &#39;, &#39;http://graphics.classmates.com/graphics/spacer.gif&gt; &#39;, &#39;http://graphics.classmates.com/graphics/sp &#39;, &#39;http://www.btinternet.com/~pir8/arnie/n, &#39;, &#39;http://zzz1.net/rd/rd.asp?ZXU=562&amp;ZXD=1471085&amp;UID=1471085 &#39;, &#39;http://www.egroups.com &#39;, &#39;http://isc.enron.com/site/doclibrary/user/ &#39;, &#39;http://esource.enron.com/worldmarket.asp&gt; &#39;, &#39;http://esource.enron.com/worldmarket_CountryAnalysis.asp&gt; &#39;, &#39;http://ad.doubleclick.net/clk;3549492;6600300;c?http://www.sportingbetusa.com/english/casino/casinonew-fr.asp?isLogged=notlogged&gt; &#39;, &#39;http://ad.doubleclick.net/clk;3549492;6600300;c?http://www.sportingbetusa.c &#39;, &#39;http://isc.enron.com/site/ &#39;, &#39;http://172.17.172.62/rt/current.asp &#39;, &#39;http://www.24bom.com&gt; &#39;]</code></pre>
 </div>
 </div>
 

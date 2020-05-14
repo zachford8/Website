@@ -8,9 +8,12 @@ tags:
 title: Resume
 ---
 
+## About Me
+* Here is my [email](mailto::19zmf97@gmail.com) if you would like to know more information.
+
 ***
 
-### EDUCATION
+### Education
 * **The University of Texas at Austin** (August 2017 - May 2020)
   + Bachelor of Arts and Science, Biology 
   + Minor: Business
@@ -20,7 +23,13 @@ title: Resume
 
 ***
 
-### EXPERIENCE
+### Computer Skills
+* Proficient in MS Office (Word, Excel, PowerPoint), G-Suite (Docs, Sheets, Slides), R/Rstudio
+* Bacis Knowledge in  Python, HTML, CSS, MySQL, and SQL
+  
+***
+
+### Work Experience
 * **Robin Healthcare** -- *Senior Medical Scribe* ; Austin, TX (June 2019 - Present)
   + Accurately document medical visits and procedures as they are being performed by different medical providers across the
 United States
@@ -44,28 +53,9 @@ prescriptions into the clinical note
 
 ***
 
-### LEADERSHIP EXPERIENCE AND ACTIVITIES
-* **Phi Kappa Psi** -- *Member* (August 2017 - May 2019)
+### Interests
+* Sports including Football, Basketball, Baseball
+* Learning different coding languages, such as Swift and Objective-C
+* Hanging out with friends and seeing the world
 
-* **Medical Shadowing Experience** (July 2017)
-  + Observed Orthopedic, Oncology, Pediatric, and Anesthesiology specialists during clinical office hours
-  + Witnessed Orthopedic and Ear Nose and Throat surgeons in different surgeries including total knee replacement,
-arthroscopic shoulder surgery, arthroscopic knee surgery, and adenoid and tonsil removal 
-  + Studied basic Anesthesiologist techniques in the operating room
-
-***
-
-### HONORS
-* **University Honors**, The University of Texas at Austin (Spring 2018)
-* **Deans List**, Concordia University Texas (Fall 2015 - Spring 2017)
-
-***
-
-### ADDITIONAL INFORMATION
-* **Computer Skills**: MS Office (Word, Excel, PowerPoint), R/RStudio, G-Suite (Docs, Sheets, Slides), Python, SQL, HTML, CSS 
-
-* **Certifications**: HIPAA Certification, Osha Certification, Texas Food Handler Certification, Boaters Safety License
-
-* **Work Eligibility**: Eligible to work in the U.S. with no restrictions
-  
 ***

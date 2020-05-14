@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>About me</title>
+    <title>Zachary M Ford</title>
     <link>/</link>
-    <description>Recent content on About me</description>
+    <description>Recent content on Zachary M Ford</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Sun, 02 Oct 2016 22:55:05 -0400</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Using Python in RStudio</title>
+      <link>/blog/2015-07-23-r-rmarkdown/</link>
+      <pubDate>Thu, 14 May 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/blog/2015-07-23-r-rmarkdown/</guid>
+      <description>Using python in RStudio Think about the last time you were using RStudio and needed to use python so you could be able to run regular expression on your data. Well, the time has come all thanks to the reticulate package and reading through this post. The first step is to read in the reticulate package just like you would with any other R package. Also, in order for this to work properly you must be using an R Markdown document.</description>
+    </item>
     
     <item>
       <title>Projects</title>
@@ -29,63 +38,7 @@
       <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>
       
       <guid>/resume/</guid>
-      <description>EDUCATION  The University of Texas at Austin (August 2017 - May 2020)  Bachelor of Arts and Science, Biology Minor: Business  Concordia University Texas (August 2015 - April 2017)  Bachelor of Science, Biology    EXPERIENCE  Robin Healthcare – Senior Medical Scribe ; Austin, TX (June 2019 - Present)  Accurately document medical visits and procedures as they are being performed by different medical providers across the United States Integrate provider dictations regarding imaging studies, lab results, procedural care, diagnoses, follow-up instructions, and prescriptions into the clinical note Navigate, maintain, and enter information into electronic medical record (EMR) databases Collaborate with a team to ensure the provider’s clinic is complete from start to finish  Luxury Boat Rentals – Boat Rental Associate/Small Boat Captain ; Austin, TX (May 2018 - August 2018)  Performed exceptional customer service to rental customers Coordinated up to 14 watercrafts, ranging from 10ft to 30ft, ensuring each vessel was clean, fueled, and operationally harmless Instructed customers on adequate operation of the vessel, including watercraft safety, directions, and caution signs Supervised up to 17 customers as small vessel captain  Twin Creeks Country Club – Assistant Golf Professional ; Cedar Park, TX (April 2016 - August 2018)  Illustrated exquisite professional customer service to all country club members and guests Ensured 82 golf carts were clean and ready for use, while other daily tasks such as the driving range, parking lot, and communal areas were in pristine condition for member use Handled appearance in the Golf Shop, concerning merchandise displays, restocking, and tagging Aided in the management of department staff, including starter and member service attendants Processed payments through a point-of-sale system for merchandise sales, green fees, and guest fees    LEADERSHIP EXPERIENCE AND ACTIVITIES  Phi Kappa Psi – Member (August 2017 - May 2019)</description>
-    </item>
-    
-    <item>
-      <title>Hello R Markdown</title>
-      <link>/blog/2015-07-23-r-rmarkdown/</link>
-      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
-      
-      <guid>/blog/2015-07-23-r-rmarkdown/</guid>
-      <description>R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-You can embed an R code chunk like this:
-summary(cars) ## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
-    </item>
-    
-    <item>
-      <title>Creating a New Theme</title>
-      <link>/blog/creating-a-new-theme/</link>
-      <pubDate>Sun, 28 Sep 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/blog/creating-a-new-theme/</guid>
-      <description>Introduction This tutorial will show you how to create a simple theme in Hugo. I assume that you are familiar with HTML, the bash command line, and that you are comfortable using Markdown to format content. I&amp;rsquo;ll explain how Hugo uses templates and how you can organize your templates to create a theme. I won&amp;rsquo;t cover using CSS to style your theme.
-We&amp;rsquo;ll start with creating a new site with a very basic template.</description>
-    </item>
-    
-    <item>
-      <title>(Hu)go Template Primer</title>
-      <link>/blog/goisforlovers/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/blog/goisforlovers/</guid>
-      <description>Hugo uses the excellent go html/template library for its template engine. It is an extremely lightweight engine that provides a very small amount of logic. In our experience that it is just the right amount of logic to be able to create a good static website. If you have used other template systems from different languages or frameworks you will find a lot of similarities in go templates.
-This document is a brief primer on using go templates.</description>
-    </item>
-    
-    <item>
-      <title>Getting Started with Hugo</title>
-      <link>/blog/hugoisforlovers/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/blog/hugoisforlovers/</guid>
-      <description>Step 1. Install Hugo Goto hugo releases and download the appropriate version for your os and architecture.
-Save it somewhere specific as we will be using it in the next step.
-More complete instructions are available at installing hugo
-Step 2. Build the Docs Hugo has its own example site which happens to also be the documentation site you are reading right now.
-Follow the following steps:
- Clone the hugo repository Go into the repo Run hugo in server mode and build the docs Open your browser to http://localhost:1313  Corresponding pseudo commands:</description>
-    </item>
-    
-    <item>
-      <title>Migrate to Hugo from Jekyll</title>
-      <link>/blog/migrate-from-jekyll/</link>
-      <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/blog/migrate-from-jekyll/</guid>
-      <description>Move static content to static Jekyll has a rule that any directory not starting with _ will be copied as-is to the _site output. Hugo keeps all static content under static. You should therefore move it all there. With Jekyll, something that looked like
-▾ &amp;lt;root&amp;gt;/ ▾ images/ logo.png  should become
-▾ &amp;lt;root&amp;gt;/ ▾ static/ ▾ images/ logo.png  Additionally, you&amp;rsquo;ll want any files that should reside at the root (such as CNAME) to be moved to static.</description>
+      <description> About Me  Here is my email if you would like to know more information.  Education  The University of Texas at Austin (August 2017 - May 2020)  Bachelor of Arts and Science, Biology Minor: Business  Concordia University Texas (August 2015 - April 2017)  Bachelor of Science, Biology    Computer Skills  Proficient in MS Office (Word, Excel, PowerPoint), G-Suite (Docs, Sheets, Slides), R/Rstudio Bacis Knowledge in Python, HTML, CSS, MySQL, and SQL   Work Experience  Robin Healthcare – Senior Medical Scribe ; Austin, TX (June 2019 - Present)  Accurately document medical visits and procedures as they are being performed by different medical providers across the United States Integrate provider dictations regarding imaging studies, lab results, procedural care, diagnoses, follow-up instructions, and prescriptions into the clinical note Navigate, maintain, and enter information into electronic medical record (EMR) databases Collaborate with a team to ensure the provider’s clinic is complete from start to finish  Luxury Boat Rentals – Boat Rental Associate/Small Boat Captain ; Austin, TX (May 2018 - August 2018)  Performed exceptional customer service to rental customers Coordinated up to 14 watercrafts, ranging from 10ft to 30ft, ensuring each vessel was clean, fueled, and operationally harmless Instructed customers on adequate operation of the vessel, including watercraft safety, directions, and caution signs Supervised up to 17 customers as small vessel captain  Twin Creeks Country Club – Assistant Golf Professional ; Cedar Park, TX (April 2016 - August 2018)  Illustrated exquisite professional customer service to all country club members and guests Ensured 82 golf carts were clean and ready for use, while other daily tasks such as the driving range, parking lot, and communal areas were in pristine condition for member use Handled appearance in the Golf Shop, concerning merchandise displays, restocking, and tagging Aided in the management of department staff, including starter and member service attendants Processed payments through a point-of-sale system for merchandise sales, green fees, and guest fees    Interests  Sports including Football, Basketball, Baseball Learning different coding languages, such as Swift and Objective-C Hanging out with friends and seeing the world    </description>
     </item>
     
     <item>
@@ -94,7 +47,7 @@ Follow the following steps:
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/myproject1/</guid>
-      <description>1) Introduction:  The two datasets that I have chosen to use are both from the National Football League (NFL). One of which has attendance data for each football teams from 2000-2019 and the other dataset has standings statistics for each football teams from 2000-2019. I acquired these two datasets through the website github.com. The variables that are within the attendance dataset are team, team name, year, total overall attendance for the year, total home attendance for the year, total away attendance for the year, the week of the season, and attendance for that week whether it was home or away.</description>
+      <description>1) Introduction: The two datasets that I have chosen to use are both from the National Football League (NFL). One of which has attendance data for each football teams from 2000-2019 and the other dataset has standings statistics for each football teams from 2000-2019. I acquired these two datasets through the website github.com. The variables that are within the attendance dataset are team, team name, year, total overall attendance for the year, total home attendance for the year, total away attendance for the year, the week of the season, and attendance for that week whether it was home or away.</description>
     </item>
     
     <item>
@@ -103,7 +56,7 @@ Follow the following steps:
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/myproject2/</guid>
-      <description>0. Introduction  The dataset that I am using for this project contains data on different shots that were taken during different games of the 2014-2015 NBA season. I found this dataset on www.kaggle.com. Some notable variables within the dataset are winorlose, which determines if the game was won-W or lost-L. shot_number is current number of shots that a player has taken in that specific game. Another variable is dribbles, which is the amount of dribbles the player took before the shot.</description>
+      <description>0. Introduction The dataset that I am using for this project contains data on different shots that were taken during different games of the 2014-2015 NBA season. I found this dataset on www.kaggle.com. Some notable variables within the dataset are winorlose, which determines if the game was won-W or lost-L. shot_number is current number of shots that a player has taken in that specific game. Another variable is dribbles, which is the amount of dribbles the player took before the shot.</description>
     </item>
     
   </channel>

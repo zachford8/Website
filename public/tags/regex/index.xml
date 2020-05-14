@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>R Markdown on Zachary M Ford</title>
-    <link>/tags/r-markdown/</link>
-    <description>Recent content in R Markdown on Zachary M Ford</description>
+    <title>regex on Zachary M Ford</title>
+    <link>/tags/regex/</link>
+    <description>Recent content in regex on Zachary M Ford</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <lastBuildDate>Thu, 14 May 2020 21:13:14 -0500</lastBuildDate>
     
-	<atom:link href="/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/regex/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>

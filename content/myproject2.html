@@ -14,11 +14,10 @@ output:
 
 
 
-<div id="introduction" class="section level1">
-<h1>0. Introduction</h1>
-<blockquote>
-<p>The dataset that I am using for this project contains data on different shots that were taken during different games of the 2014-2015 NBA season. I found this dataset on www.kaggle.com. Some notable variables within the dataset are winorlose, which determines if the game was won-W or lost-L. shot_number is current number of shots that a player has taken in that specific game. Another variable is dribbles, which is the amount of dribbles the player took before the shot. touch_time is the amount of time the player possessed the ball before taking the shot. shot_dist is the distance from the rim in feet from where the player took the shot. pts_type is whether the shot taken by the player was a two-2 or three-3 point shot, which is also under the variable pts. shot_result is whether the player made or missed the shot, this variable is also in binary form under the variable fgm with 1 = made and 0 = missed. clost_def_dist is how close the defender was to the player who attemped the shot in feet. The last notable variable is the closeest_defender and player_name which are the names of the closest defender as well as the player who took the shot, respectively. To tidy the dataset, I removed all rows that contained an NA value as these would not contribute the following statistical tests that I am going to run in this project, I then made all column names lowercase for ease, and I renamed the w column to winorlose for clairity. Moreover, I also took away CLOSEST_DEFENDER_PLAYER_ID and player_id which are just redundant variables. I also decieded to add in totpts which is just the total points for a specific player within a specific game. Following the tidying, I have a total of 122,502 rows with 20 columns.</p>
-</blockquote>
+<div id="introduction" class="section level4">
+<h4>0. Introduction</h4>
+<div id="the-dataset-that-i-am-using-for-this-project-contains-data-on-different-shots-that-were-taken-during-different-games-of-the-2014-2015-nba-season.-i-found-this-dataset-on-www.kaggle.com.-some-notable-variables-within-the-dataset-are-winorlose-which-determines-if-the-game-was-won-w-or-lost-l.-shot_number-is-current-number-of-shots-that-a-player-has-taken-in-that-specific-game.-another-variable-is-dribbles-which-is-the-amount-of-dribbles-the-player-took-before-the-shot.-touch_time-is-the-amount-of-time-the-player-possessed-the-ball-before-taking-the-shot.-shot_dist-is-the-distance-from-the-rim-in-feet-from-where-the-player-took-the-shot.-pts_type-is-whether-the-shot-taken-by-the-player-was-a-two-2-or-three-3-point-shot-which-is-also-under-the-variable-pts.-shot_result-is-whether-the-player-made-or-missed-the-shot-this-variable-is-also-in-binary-form-under-the-variable-fgm-with-1-made-and-0-missed.-clost_def_dist-is-how-close-the-defender-was-to-the-player-who-attemped-the-shot-in-feet.-the-last-notable-variable-is-the-closeest_defender-and-player_name-which-are-the-names-of-the-closest-defender-as-well-as-the-player-who-took-the-shot-respectively.-to-tidy-the-dataset-i-removed-all-rows-that-contained-an-na-value-as-these-would-not-contribute-the-following-statistical-tests-that-i-am-going-to-run-in-this-project-i-then-made-all-column-names-lowercase-for-ease-and-i-renamed-the-w-column-to-winorlose-for-clairity.-moreover-i-also-took-away-closest_defender_player_id-and-player_id-which-are-just-redundant-variables.-i-also-decieded-to-add-in-totpts-which-is-just-the-total-points-for-a-specific-player-within-a-specific-game.-following-the-tidying-i-have-a-total-of-122502-rows-with-20-columns." class="section level6">
+<h6>The dataset that I am using for this project contains data on different shots that were taken during different games of the 2014-2015 NBA season. I found this dataset on www.kaggle.com. Some notable variables within the dataset are winorlose, which determines if the game was won-W or lost-L. shot_number is current number of shots that a player has taken in that specific game. Another variable is dribbles, which is the amount of dribbles the player took before the shot. touch_time is the amount of time the player possessed the ball before taking the shot. shot_dist is the distance from the rim in feet from where the player took the shot. pts_type is whether the shot taken by the player was a two-2 or three-3 point shot, which is also under the variable pts. shot_result is whether the player made or missed the shot, this variable is also in binary form under the variable fgm with 1 = made and 0 = missed. clost_def_dist is how close the defender was to the player who attemped the shot in feet. The last notable variable is the closeest_defender and player_name which are the names of the closest defender as well as the player who took the shot, respectively. To tidy the dataset, I removed all rows that contained an NA value as these would not contribute the following statistical tests that I am going to run in this project, I then made all column names lowercase for ease, and I renamed the w column to winorlose for clairity. Moreover, I also took away CLOSEST_DEFENDER_PLAYER_ID and player_id which are just redundant variables. I also decieded to add in totpts which is just the total points for a specific player within a specific game. Following the tidying, I have a total of 122,502 rows with 20 columns.</h6>
 <pre class="r"><code>shot_logs&lt;-readr::read_csv(&quot;/Users/zachford/Documents/My_Website/content/project2data.csv&quot;)
 #Tidying
 shotdat&lt;-shot_logs%&gt;%
@@ -46,23 +45,23 @@ shot_number period game_clock shot_clock dribbles
 &lt;dbl&gt;, pts &lt;dbl&gt;, player_name &lt;chr&gt;,
 ## # quarter &lt;fct&gt;</code></pre>
 </div>
-<div id="manovaanova" class="section level1">
-<h1>1. MANOVA/ANOVA</h1>
-<blockquote>
-<p>The MANOVA I decied to run was testing whether shot number, shot clock, dribbles, touch time, shot distance, and closest defender distance means differed across if the shot was a two or three -pointer. Since the MANOVA was significant, I performed one-way ANOVAs for each each variable to see which ones are significant. However, since my categorical variable is binary, the post-hoc t tests are unnecessary since the significance can be inferred from the one-way ANOVAs. Therefore, the bonferroni correction I used to determined significance is 0.007 because I performed 1 MANOVA and 6 ANOVAs, which is 7 total tests. Using the bonferroni correction, I would infer that shot clock, dribbles, touch time, shot distance, and closest defender distance are significant with a p-value of &lt;2.2e-16. Additionally, I would infer that shot number is not significant with a p-value of 0.01865 which is less than my bonferroni correction of 0.007.</p>
-</blockquote>
-<blockquote>
-<p>For the assumptions, I would assume that random sampling is met, but I would assume that independent observations would be violated due to some of samples being taken from the same game together with the same player. I would assume that normality is met because although there is some outliers, most of the data is within a certain mean. Moreover, I would also assume that covariances are not equal between each of the variables. The assumption of linear relationships among DVs would also be violated because most of the variables are going to have some outliers when plotting them. Lastly, multicollinearity would be violated because the most of these variables are more than just closely related.</p>
-</blockquote>
-<blockquote>
-<p>Hypothesis:</p>
-</blockquote>
-<blockquote>
-<ul>
-<li>H<sub>0</sub> - For the shot number, shot clock, dribbles, touch time, shot distance, and closest defender distance, the means for whether the shot was a two-pointer or three-pointer are equal.</li>
-<li>H<sub>A</sub> - For at least one response variable, at least one group mean different.</li>
-</ul>
-</blockquote>
+</div>
+<div id="manovaanova" class="section level4">
+<h4>1. MANOVA/ANOVA</h4>
+<div id="the-manova-i-decied-to-run-was-testing-whether-shot-number-shot-clock-dribbles-touch-time-shot-distance-and-closest-defender-distance-means-differed-across-if-the-shot-was-a-two-or-three--pointer.-since-the-manova-was-significant-i-performed-one-way-anovas-for-each-each-variable-to-see-which-ones-are-significant.-however-since-my-categorical-variable-is-binary-the-post-hoc-t-tests-are-unnecessary-since-the-significance-can-be-inferred-from-the-one-way-anovas.-therefore-the-bonferroni-correction-i-used-to-determined-significance-is-0.007-because-i-performed-1-manova-and-6-anovas-which-is-7-total-tests.-using-the-bonferroni-correction-i-would-infer-that-shot-clock-dribbles-touch-time-shot-distance-and-closest-defender-distance-are-significant-with-a-p-value-of-2.2e-16.-additionally-i-would-infer-that-shot-number-is-not-significant-with-a-p-value-of-0.01865-which-is-less-than-my-bonferroni-correction-of-0.007." class="section level6">
+<h6>The MANOVA I decied to run was testing whether shot number, shot clock, dribbles, touch time, shot distance, and closest defender distance means differed across if the shot was a two or three -pointer. Since the MANOVA was significant, I performed one-way ANOVAs for each each variable to see which ones are significant. However, since my categorical variable is binary, the post-hoc t tests are unnecessary since the significance can be inferred from the one-way ANOVAs. Therefore, the bonferroni correction I used to determined significance is 0.007 because I performed 1 MANOVA and 6 ANOVAs, which is 7 total tests. Using the bonferroni correction, I would infer that shot clock, dribbles, touch time, shot distance, and closest defender distance are significant with a p-value of &lt;2.2e-16. Additionally, I would infer that shot number is not significant with a p-value of 0.01865 which is less than my bonferroni correction of 0.007.</h6>
+</div>
+<div id="for-the-assumptions-i-would-assume-that-random-sampling-is-met-but-i-would-assume-that-independent-observations-would-be-violated-due-to-some-of-samples-being-taken-from-the-same-game-together-with-the-same-player.-i-would-assume-that-normality-is-met-because-although-there-is-some-outliers-most-of-the-data-is-within-a-certain-mean.-moreover-i-would-also-assume-that-covariances-are-not-equal-between-each-of-the-variables.-the-assumption-of-linear-relationships-among-dvs-would-also-be-violated-because-most-of-the-variables-are-going-to-have-some-outliers-when-plotting-them.-lastly-multicollinearity-would-be-violated-because-the-most-of-these-variables-are-more-than-just-closely-related." class="section level6">
+<h6>For the assumptions, I would assume that random sampling is met, but I would assume that independent observations would be violated due to some of samples being taken from the same game together with the same player. I would assume that normality is met because although there is some outliers, most of the data is within a certain mean. Moreover, I would also assume that covariances are not equal between each of the variables. The assumption of linear relationships among DVs would also be violated because most of the variables are going to have some outliers when plotting them. Lastly, multicollinearity would be violated because the most of these variables are more than just closely related.</h6>
+</div>
+<div id="hypothesis" class="section level6">
+<h6><strong>Hypothesis:</strong></h6>
+</div>
+<div id="h0---for-the-shot-number-shot-clock-dribbles-touch-time-shot-distance-and-closest-defender-distance-the-means-for-whether-the-shot-was-a-two-pointer-or-three-pointer-are-equal." class="section level6">
+<h6>H<sub>0</sub> - For the shot number, shot clock, dribbles, touch time, shot distance, and closest defender distance, the means for whether the shot was a two-pointer or three-pointer are equal.</h6>
+</div>
+<div id="ha---for-at-least-one-response-variable-at-least-one-group-mean-different." class="section level6">
+<h6>H<sub>A</sub> - For at least one response variable, at least one group mean different.</h6>
 <pre class="r"><code>#MANOVA
 manshot&lt;-
   manova(
@@ -131,24 +130,20 @@ summary.aov(manshot)</code></pre>
 1-0.95^7</code></pre>
 <pre><code>## [1] 0.3016627</code></pre>
 </div>
-<div id="randomization-test" class="section level1">
-<h1>2. Randomization Test</h1>
-<blockquote>
-<p>The randomization test that I performed determine whether shot distance is the same or different between two of the greatest shooters to ever touch a basketball, Stephen Curry and Klay Thompson. My formal null hypothesis was shot distance mean is the same for Stephen Curry and Klay Thompson. Following the test, I would fail to reject my null hypothesis that shot distance mean is the same between Stephen Curry and Klay Thompson, given that my two-tailed p-value was 0.166 and normal p-value was 0.1664 I included the Welch t-test for comparison which revealed a p-value of 0.1716.</p>
-</blockquote>
-<blockquote>
-<p>Hypothesis:</p>
-</blockquote>
-<blockquote>
-<ul>
-<li>H<sub>0</sub> - shot distance mean is the same between Stephen Curry and Klay Thompson.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li>H<sub>A</sub> - shot distance mean differs between Stephen Curry and Klay Thompson.</li>
-</ul>
-</blockquote>
+</div>
+<div id="randomization-test" class="section level3">
+<h3>2. Randomization Test</h3>
+<div id="the-randomization-test-that-i-performed-determine-whether-shot-distance-is-the-same-or-different-between-two-of-the-greatest-shooters-to-ever-touch-a-basketball-stephen-curry-and-klay-thompson.-my-formal-null-hypothesis-was-shot-distance-mean-is-the-same-for-stephen-curry-and-klay-thompson.-following-the-test-i-would-fail-to-reject-my-null-hypothesis-that-shot-distance-mean-is-the-same-between-stephen-curry-and-klay-thompson-given-that-my-two-tailed-p-value-was-0.166-and-normal-p-value-was-0.1664-i-included-the-welch-t-test-for-comparison-which-revealed-a-p-value-of-0.1716." class="section level6">
+<h6>The randomization test that I performed determine whether shot distance is the same or different between two of the greatest shooters to ever touch a basketball, Stephen Curry and Klay Thompson. My formal null hypothesis was shot distance mean is the same for Stephen Curry and Klay Thompson. Following the test, I would fail to reject my null hypothesis that shot distance mean is the same between Stephen Curry and Klay Thompson, given that my two-tailed p-value was 0.166 and normal p-value was 0.1664 I included the Welch t-test for comparison which revealed a p-value of 0.1716.</h6>
+</div>
+<div id="hypothesis-1" class="section level6">
+<h6><strong>Hypothesis:</strong></h6>
+</div>
+<div id="h0---shot-distance-mean-is-the-same-between-stephen-curry-and-klay-thompson." class="section level6">
+<h6>H<sub>0</sub> - shot distance mean is the same between Stephen Curry and Klay Thompson.</h6>
+</div>
+<div id="ha---shot-distance-mean-differs-between-stephen-curry-and-klay-thompson." class="section level6">
+<h6>H<sub>A</sub> - shot distance mean differs between Stephen Curry and Klay Thompson.</h6>
 <pre class="r"><code>#Tidying
 shoottest&lt;-shotdat%&gt;%filter(player_name==&quot;stephen curry&quot;| player_name==&quot;klay thompson&quot;)
 
@@ -170,9 +165,9 @@ random2[i]&lt;-mean(new2[new2$name==&quot;stephen curry&quot;,]$dist)-
 
 #p-value
 mean(random2&gt;0.5541117 | random2&lt; -0.5541117) #Two-tailed</code></pre>
-<pre><code>## [1] 0.1696</code></pre>
+<pre><code>## [1] 0.1598</code></pre>
 <pre class="r"><code>mean(random2&gt; 0.5541117)*2 #Normal</code></pre>
-<pre><code>## [1] 0.176</code></pre>
+<pre><code>## [1] 0.1576</code></pre>
 <pre class="r"><code>#Welch t-test for comparison
 t.test(data=shoottest,shot_dist~player_name)</code></pre>
 <pre><code>##
@@ -191,80 +186,20 @@ equal to 0
 {hist(random2,main=&quot;&quot;,ylab=&quot;&quot;); abline(v = 0.5541117,col=&quot;red&quot;)}</code></pre>
 <p><img src="/myproject2_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
-<div id="linear-regression-model" class="section level1">
-<h1>3. Linear Regression Model</h1>
-<blockquote>
-<p>The linear regression model I chose to perform was looking at Lebron James total points and determining whether shot distance and quarter/period had an impact on this variable.</p>
-</blockquote>
-<blockquote>
-<p>Coefficient Estimates:</p>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>Intercept</em> - Lebron James predicted points total with an average shot distance in the 1st quarter would be 21.066.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>q2</em> - Controlling for shot distance, his point total in the 2nd quarter is 0.111 points lower than in the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>q3</em> - Controlling for shot distance, his point total in the 3rd quarter is 0.116 points higher than in the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>q4</em> - Controlling for shot distance, his point total in the 4th quarter is 0.295 points higher than in the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>q5</em> - Controlling for shot distance, his point total in the 5th quarter (or overtime) is 9.967 points higher than in the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>sdist_c</em> - Controlling for the different quarters, for every one unit increase in Lebron’s shot distance, his total points went down by 0.07.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>sdist_c:q2</em> - The slope for shot distance on total points is 0.046 higher in the 2nd quarter compared to the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>sdist_c:q3</em> - The slope for shot distance on total points is 0.153 higher in the 3rd quarter compared to the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>sdist_c:q4</em> - The slope for shot distance on total points is 0.046 higher in the 4th quarter compared to the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>sdist_c:q5</em> - The slope for shot distance on total points is 0.046 higher in the 5th quarter (or overtime) compared to the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<p>There were no significant changes from before the robust standard errors compared to after.</p>
-</blockquote>
-<blockquote>
-<p>Hypothesis:</p>
-</blockquote>
-<blockquote>
-<ul>
-<li>H<sub>0</sub> - Controlling for shot distance, the different quarter of a basketball game does not explain variation in a total points for Lebron James.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li>H<sub>A</sub> - Controlling for the different quarter of a basketball game, shot distance does not explain variation in a total points for Lebron James.</li>
-</ul>
-</blockquote>
+</div>
+<div id="linear-regression-model" class="section level3">
+<h3>3. Linear Regression Model</h3>
+<div id="the-linear-regression-model-i-chose-to-perform-was-looking-at-lebron-james-total-points-and-determining-whether-shot-distance-and-quarterperiod-had-an-impact-on-this-variable." class="section level6">
+<h6>The linear regression model I chose to perform was looking at Lebron James total points and determining whether shot distance and quarter/period had an impact on this variable.</h6>
+</div>
+<div id="hypothesis-2" class="section level6">
+<h6><strong>Hypothesis:</strong></h6>
+</div>
+<div id="h0---controlling-for-shot-distance-the-different-quarter-of-a-basketball-game-does-not-explain-variation-in-a-total-points-for-lebron-james." class="section level6">
+<h6>H<sub>0</sub> - Controlling for shot distance, the different quarter of a basketball game does not explain variation in a total points for Lebron James.</h6>
+</div>
+<div id="ha---controlling-for-the-different-quarter-of-a-basketball-game-shot-distance-does-not-explain-variation-in-a-total-points-for-lebron-james." class="section level6">
+<h6>H<sub>A</sub> - Controlling for the different quarter of a basketball game, shot distance does not explain variation in a total points for Lebron James.</h6>
 <pre class="r"><code>#Tidying
 lebron3&lt;-shotdat%&gt;%filter(player_name==&quot;lebron james&quot;)%&gt;%group_by(matchup)%&gt;%mutate(totpts=sum(pts))
 
@@ -367,11 +302,47 @@ coeftest(fitint3, vcov = vcovHC(fitint3))[,1:2]</code></pre>
 ## sdist_c:quarter4  0.14032441 0.07321027
 ## sdist_c:quarter5  0.12383398 0.13319588</code></pre>
 </div>
-<div id="linear-regression-model-bootstrapping-sesresiduals" class="section level1">
-<h1>4. Linear Regression Model (Bootstrapping SEs/Residuals)</h1>
-<blockquote>
-<p>Given that there was not much difference between the original p-values/SEs and the robust p-values/SEs, there is a significant difference between those two and the bootstrapping p-values and SEs. Each of the SEs decreased significantly compared to the original and robust SEs that were calculated. There was not much difference between the original p-values and the ones calculated below.</p>
-</blockquote>
+<div id="coefficient-estimates" class="section level6">
+<h6><strong>Coefficient Estimates:</strong></h6>
+</div>
+<div id="intercept---lebron-james-predicted-points-total-with-an-average-shot-distance-in-the-1st-quarter-would-be-21.066." class="section level6">
+<h6><em>Intercept</em> - Lebron James predicted points total with an average shot distance in the 1st quarter would be 21.066.</h6>
+</div>
+<div id="q2---controlling-for-shot-distance-his-point-total-in-the-2nd-quarter-is-0.111-points-lower-than-in-the-1st-quarter." class="section level6">
+<h6><em>q2</em> - Controlling for shot distance, his point total in the 2nd quarter is 0.111 points lower than in the 1st quarter.</h6>
+</div>
+<div id="q3---controlling-for-shot-distance-his-point-total-in-the-3rd-quarter-is-0.116-points-higher-than-in-the-1st-quarter." class="section level6">
+<h6><em>q3</em> - Controlling for shot distance, his point total in the 3rd quarter is 0.116 points higher than in the 1st quarter.</h6>
+</div>
+<div id="q4---controlling-for-shot-distance-his-point-total-in-the-4th-quarter-is-0.295-points-higher-than-in-the-1st-quarter." class="section level6">
+<h6><em>q4</em> - Controlling for shot distance, his point total in the 4th quarter is 0.295 points higher than in the 1st quarter.</h6>
+</div>
+<div id="q5---controlling-for-shot-distance-his-point-total-in-the-5th-quarter-or-overtime-is-9.967-points-higher-than-in-the-1st-quarter." class="section level6">
+<h6><em>q5</em> - Controlling for shot distance, his point total in the 5th quarter (or overtime) is 9.967 points higher than in the 1st quarter.</h6>
+</div>
+<div id="sdist_c---controlling-for-the-different-quarters-for-every-one-unit-increase-in-lebrons-shot-distance-his-total-points-went-down-by-0.07." class="section level6">
+<h6><em>sdist_c</em> - Controlling for the different quarters, for every one unit increase in Lebron’s shot distance, his total points went down by 0.07.</h6>
+</div>
+<div id="sdist_cq2---the-slope-for-shot-distance-on-total-points-is-0.046-higher-in-the-2nd-quarter-compared-to-the-1st-quarter." class="section level6">
+<h6><em>sdist_c:q2</em> - The slope for shot distance on total points is 0.046 higher in the 2nd quarter compared to the 1st quarter.</h6>
+</div>
+<div id="sdist_cq3---the-slope-for-shot-distance-on-total-points-is-0.153-higher-in-the-3rd-quarter-compared-to-the-1st-quarter." class="section level6">
+<h6><em>sdist_c:q3</em> - The slope for shot distance on total points is 0.153 higher in the 3rd quarter compared to the 1st quarter.</h6>
+</div>
+<div id="sdist_cq4---the-slope-for-shot-distance-on-total-points-is-0.046-higher-in-the-4th-quarter-compared-to-the-1st-quarter." class="section level6">
+<h6><em>sdist_c:q4</em> - The slope for shot distance on total points is 0.046 higher in the 4th quarter compared to the 1st quarter.</h6>
+</div>
+<div id="sdist_cq5---the-slope-for-shot-distance-on-total-points-is-0.046-higher-in-the-5th-quarter-or-overtime-compared-to-the-1st-quarter." class="section level6">
+<h6><em>sdist_c:q5</em> - The slope for shot distance on total points is 0.046 higher in the 5th quarter (or overtime) compared to the 1st quarter.</h6>
+</div>
+<div id="there-were-no-significant-changes-from-before-the-robust-standard-errors-compared-to-after." class="section level6">
+<h6><strong>There were no significant changes from before the robust standard errors compared to after.</strong></h6>
+</div>
+</div>
+<div id="linear-regression-model-bootstrapping-sesresiduals" class="section level3">
+<h3>4. Linear Regression Model (Bootstrapping SEs/Residuals)</h3>
+<div id="given-that-there-was-not-much-difference-between-the-original-p-valuesses-and-the-robust-p-valuesses-there-is-a-significant-difference-between-those-two-and-the-bootstrapping-p-values-and-ses.-each-of-the-ses-decreased-significantly-compared-to-the-original-and-robust-ses-that-were-calculated.-there-was-not-much-difference-between-the-original-p-values-and-the-ones-calculated-below." class="section level6">
+<h6>Given that there was not much difference between the original p-values/SEs and the robust p-values/SEs, there is a significant difference between those two and the bootstrapping p-values and SEs. Each of the SEs decreased significantly compared to the original and robust SEs that were calculated. There was not much difference between the original p-values and the ones calculated below.</h6>
 <pre class="r"><code>##Bootstrapping SEs
 sdist&lt;-replicate(5000, {
   boot&lt;-lebron3[sample(nrow(lebron3),replace=T),]
@@ -382,10 +353,10 @@ sdist&lt;-replicate(5000, {
 sdist %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
 <pre><code>## (Intercept) sdist_c quarter2 quarter3 quarter4 quarter5
 sdist_c:quarter2 sdist_c:quarter3
-## 1 0.4387759 0.04758732 0.6348737 0.6418055 0.6462422
-2.249286 0.06739581 0.07024614
+## 1 0.4255445 0.04828917 0.6125894 0.6384559 0.6415778
+5.248907 0.06944196 0.0704211
 ## sdist_c:quarter4 sdist_c:quarter5
-## 1 0.07135679 NA</code></pre>
+## 1 0.07253449 NA</code></pre>
 <pre class="r"><code>##Bootstrapping Residuals
 fit4&lt;-lm(totpts ~ sdist_c * quarter, data=lebron3)
 resids&lt;-fit4$residuals
@@ -401,71 +372,55 @@ resid_resamp&lt;-replicate(5000,{
 resid_resamp %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
 <pre><code>## (Intercept) sdist_c quarter2 quarter3 quarter4 quarter5
 sdist_c:quarter2 sdist_c:quarter3
-## 1 0.4301668 0.04784286 0.6174306 0.61767 0.65468
-2.219753 0.06726238 0.06849777
+## 1 0.434121 0.04775079 0.629819 0.6438751 0.666789
+2.245104 0.06779634 0.06783286
 ## sdist_c:quarter4 sdist_c:quarter5
-## 1 0.07136712 0.2609775</code></pre>
+## 1 0.07198389 0.2640173</code></pre>
 </div>
-<div id="logistic-regression" class="section level1">
-<h1>5. Logistic Regression</h1>
-<blockquote>
-<p>The logistic regression model that I chose to run was testing whether closest defender distance and which quarter/period the shot was taken in had an effect on if the shot was made or missed for two of the greatest shooters in the game of basketball, Stephen Curry and Klay Thompson.</p>
-</blockquote>
-<blockquote>
-<p>Coefficient estimates:</p>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>Intercept</em> - Odds of a made shot when closest defender distance=0 and the shot was taken in the 1st quarter is 0.856.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>Shot_dist</em> - Controlling for which quarter the shot was taken, for every one additional foot added to how close a defender was when the shot was attempted, odds of a made shot increased by a factor of 1.022.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>q2</em> - Controlling for shot distance, odds of a made shot in the 2nd quarter are 1.156 times higher than in the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>q3</em> - Controlling for shot distance, odds of a made shot in the 3rd quarter are 0.985 times higher than in the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>q4</em> - Controlling for shot distance, odds of a made shot in the 4th quarter are 0.757 times higher than in the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>q5</em> - Controlling for shot distance, odds of a made shot in the 5th quarter (or overtime) are 1.085 times higher than in the 1st quarter.</li>
-</ul>
-</blockquote>
-<blockquote>
-<p>Accuracy, TPR, TNR:</p>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>Accuracy</em> - The overall accuracy was decent, with the proportion of correctly classified made/missed shots being 0.537.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>Sensitivity (TPR)</em> - The overall sensitivity was not the best with the proportion of shots correctly classified as <code>made</code> was 0.272.</li>
-</ul>
-</blockquote>
-<blockquote>
-<ul>
-<li><em>Specificity (TNR)</em> - The overall specificity was pretty good with the proportion of shots correctly classified as <code>missed</code> was 0.781.</li>
-</ul>
-</blockquote>
-<blockquote>
-<p>ROC Curve/AUC:
-The calculated AUC was 0.54, which is not the greatest and indicates that it is hard to predict whether a shot will be made or missed by only using how close the closest defender was in feet and which quarter the shot was attempted in.</p>
-</blockquote>
+</div>
+<div id="logistic-regression" class="section level3">
+<h3>5. Logistic Regression</h3>
+<div id="the-logistic-regression-model-that-i-chose-to-run-was-testing-whether-closest-defender-distance-and-which-quarterperiod-the-shot-was-taken-in-had-an-effect-on-if-the-shot-was-made-or-missed-for-two-of-the-greatest-shooters-in-the-game-of-basketball-stephen-curry-and-klay-thompson." class="section level6">
+<h6>The logistic regression model that I chose to run was testing whether closest defender distance and which quarter/period the shot was taken in had an effect on if the shot was made or missed for two of the greatest shooters in the game of basketball, Stephen Curry and Klay Thompson.</h6>
+</div>
+<div id="coefficient-estimates-1" class="section level6">
+<h6><strong>Coefficient estimates:</strong></h6>
+</div>
+<div id="intercept---odds-of-a-made-shot-when-closest-defender-distance0-and-the-shot-was-taken-in-the-1st-quarter-is-0.856." class="section level6">
+<h6><em>Intercept</em> - Odds of a made shot when closest defender distance=0 and the shot was taken in the 1st quarter is 0.856.</h6>
+</div>
+<div id="shot_dist---controlling-for-which-quarter-the-shot-was-taken-for-every-one-additional-foot-added-to-how-close-a-defender-was-when-the-shot-was-attempted-odds-of-a-made-shot-increased-by-a-factor-of-1.022." class="section level6">
+<h6><em>Shot_dist</em> - Controlling for which quarter the shot was taken, for every one additional foot added to how close a defender was when the shot was attempted, odds of a made shot increased by a factor of 1.022.</h6>
+</div>
+<div id="q2---controlling-for-shot-distance-odds-of-a-made-shot-in-the-2nd-quarter-are-1.156-times-higher-than-in-the-1st-quarter." class="section level6">
+<h6><em>q2</em> - Controlling for shot distance, odds of a made shot in the 2nd quarter are 1.156 times higher than in the 1st quarter.</h6>
+</div>
+<div id="q3---controlling-for-shot-distance-odds-of-a-made-shot-in-the-3rd-quarter-are-0.985-times-higher-than-in-the-1st-quarter." class="section level6">
+<h6><em>q3</em> - Controlling for shot distance, odds of a made shot in the 3rd quarter are 0.985 times higher than in the 1st quarter.</h6>
+</div>
+<div id="q4---controlling-for-shot-distance-odds-of-a-made-shot-in-the-4th-quarter-are-0.757-times-higher-than-in-the-1st-quarter." class="section level6">
+<h6><em>q4</em> - Controlling for shot distance, odds of a made shot in the 4th quarter are 0.757 times higher than in the 1st quarter.</h6>
+</div>
+<div id="q5---controlling-for-shot-distance-odds-of-a-made-shot-in-the-5th-quarter-or-overtime-are-1.085-times-higher-than-in-the-1st-quarter." class="section level6">
+<h6><em>q5</em> - Controlling for shot distance, odds of a made shot in the 5th quarter (or overtime) are 1.085 times higher than in the 1st quarter.</h6>
+</div>
+<div id="accuracy-tpr-tnr" class="section level6">
+<h6><strong>Accuracy, TPR, TNR:</strong></h6>
+</div>
+<div id="accuracy---the-overall-accuracy-was-decent-with-the-proportion-of-correctly-classified-mademissed-shots-being-0.537." class="section level6">
+<h6><em>Accuracy</em> - The overall accuracy was decent, with the proportion of correctly classified made/missed shots being 0.537.</h6>
+</div>
+<div id="sensitivity-tpr---the-overall-sensitivity-was-not-the-best-with-the-proportion-of-shots-correctly-classified-as-made-was-0.272." class="section level6">
+<h6><em>Sensitivity (TPR)</em> - The overall sensitivity was not the best with the proportion of shots correctly classified as <code>made</code> was 0.272.</h6>
+</div>
+<div id="specificity-tnr---the-overall-specificity-was-pretty-good-with-the-proportion-of-shots-correctly-classified-as-missed-was-0.781." class="section level6">
+<h6><em>Specificity (TNR)</em> - The overall specificity was pretty good with the proportion of shots correctly classified as <code>missed</code> was 0.781.</h6>
+</div>
+<div id="roc-curveauc" class="section level6">
+<h6><strong>ROC Curve/AUC:</strong></h6>
+</div>
+<div id="the-calculated-auc-was-0.54-which-is-not-the-greatest-and-indicates-that-it-is-hard-to-predict-whether-a-shot-will-be-made-or-missed-by-only-using-how-close-the-closest-defender-was-in-feet-and-which-quarter-the-shot-was-attempted-in." class="section level6">
+<h6>The calculated AUC was 0.54, which is not the greatest and indicates that it is hard to predict whether a shot will be made or missed by only using how close the closest defender was in feet and which quarter the shot was attempted in.</h6>
 <pre class="r"><code>#Testing
 fit5&lt;-glm(fgm~close_def_dist+quarter, data=shoottest, family=&#39;binomial&#39;)
 coef(fit5)</code></pre>
@@ -534,20 +489,20 @@ for(i in 1:k){
 }
 
 summarize_all(diags,mean)</code></pre>
-<pre><code>##        acc      sens      spec       ppv       auc
-## 1 0.514787 0.2707287 0.7415989 0.4890142 0.5171044</code></pre>
+<pre><code>##         acc      sens      spec       ppv       auc
+## 1 0.5332387 0.2612831 0.7870298 0.5295471 0.5260264</code></pre>
 </div>
-<div id="lasso-regression" class="section level1">
-<h1>6. LASSO Regression</h1>
-<blockquote>
-<p>For my LASSO regression model I chose to perform a test that determines which variables would be good predictors of if Lebron James takes a two or three point shot.</p>
-</blockquote>
-<blockquote>
-<p>The variables that were retained in this model were game_id, or which team Lebron was playing against. Period, or which quarter he attempted the shot in. Shot clock, or what the shot clock was at at the time Lebron attempted the shot. Touch time, or the total time that Lebron was possessing the ball before attempting the shot. Shot dist, or the distance from the basket in feet. Lastly, close def dist, or how far away the closest defender was in feet.</p>
-</blockquote>
-<blockquote>
-<p>Following the 10-fold CV, the results show that the AUC was 0.9974 with an accuracy of 0.9726. Both of these calculated results show that this model fits extremely well and that these variables are extremely good predictors in determining which shot Lebron James is going to attempt.</p>
-</blockquote>
+</div>
+<div id="lasso-regression" class="section level3">
+<h3>6. LASSO Regression</h3>
+<div id="for-my-lasso-regression-model-i-chose-to-perform-a-test-that-determines-which-variables-would-be-good-predictors-of-if-lebron-james-takes-a-two-or-three-point-shot." class="section level6">
+<h6>For my LASSO regression model I chose to perform a test that determines which variables would be good predictors of if Lebron James takes a two or three point shot.</h6>
+</div>
+<div id="the-variables-that-were-retained-in-this-model-were-game_id-or-which-team-lebron-was-playing-against.-period-or-which-quarter-he-attempted-the-shot-in.-shot-clock-or-what-the-shot-clock-was-at-at-the-time-lebron-attempted-the-shot.-touch-time-or-the-total-time-that-lebron-was-possessing-the-ball-before-attempting-the-shot.-shot-dist-or-the-distance-from-the-basket-in-feet.-lastly-close-def-dist-or-how-far-away-the-closest-defender-was-in-feet." class="section level6">
+<h6>The variables that were retained in this model were game_id, or which team Lebron was playing against. Period, or which quarter he attempted the shot in. Shot clock, or what the shot clock was at at the time Lebron attempted the shot. Touch time, or the total time that Lebron was possessing the ball before attempting the shot. Shot dist, or the distance from the basket in feet. Lastly, close def dist, or how far away the closest defender was in feet.</h6>
+</div>
+<div id="following-the-10-fold-cv-the-results-show-that-the-auc-was-0.9974-with-an-accuracy-of-0.9726.-both-of-these-calculated-results-show-that-this-model-fits-extremely-well-and-that-these-variables-are-extremely-good-predictors-in-determining-which-shot-lebron-james-is-going-to-attempt." class="section level6">
+<h6>Following the 10-fold CV, the results show that the AUC was 0.9974 with an accuracy of 0.9726. Both of these calculated results show that this model fits extremely well and that these variables are extremely good predictors in determining which shot Lebron James is going to attempt.</h6>
 <pre class="r"><code>#Tidying/Removing categorical variables
 lebron6&lt;-shotdat%&gt;%
   filter(player_name==&quot;lebron james&quot;)%&gt;%
@@ -564,16 +519,16 @@ lasso6&lt;-glmnet(x6,y6,family=&quot;binomial&quot;,lambda = cv6$lambda.1se)
 coef(lasso6)</code></pre>
 <pre><code>## 10 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                          s0
-## (Intercept)     11.60068166
-## game_id          0.32642977
+## (Intercept)     12.40145467
+## game_id          0.35919236
 ## final_margin     .         
 ## shot_number      .         
-## period           0.03005701
-## shot_clock      -0.42378704
+## period           0.05389579
+## shot_clock      -0.44716761
 ## dribbles         .         
-## touch_time       0.06939473
-## shot_dist      -11.70162268
-## close_def_dist  -0.07420909</code></pre>
+## touch_time       0.08171138
+## shot_dist      -12.47603540
+## close_def_dist  -0.11194999</code></pre>
 <pre class="r"><code>#10-Fold CV
 k=10
 
@@ -595,5 +550,6 @@ for(i in 1:k){
 
 summarize_all(diags,mean)</code></pre>
 <pre><code>##         acc      sens      spec       ppv       auc
-## 1 0.9746473 0.9834798 0.9486111 0.9828698 0.9974865</code></pre>
+## 1 0.9736058 0.9829987 0.9446284 0.9817541 0.9975783</code></pre>
+</div>
 </div>

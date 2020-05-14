@@ -18,8 +18,9 @@ tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
 ```
 
 
-## 1) Introduction: 
->The two datasets that I have chosen to use are both from the National Football League (NFL). One of which has attendance data for each football teams from 2000-2019 and the other dataset has standings statistics for each football teams from 2000-2019. I acquired these two datasets through the website github.com. The variables that are within the attendance dataset are team, team name, year, total overall attendance for the year, total home attendance for the year, total away attendance for the year, the week of the season, and attendance for that week whether it was home or away. The variables that are within the standings dataset are team, team name, year, wins for that year, losses for that year, total points scored that year, total points allowed that year, the points differential (points scored – points allowed), margin of victory (points differential/games played), strength of schedule, simple rating, offensive ranking, defensive ranking, if the team made the playoffs, if the team won the Super Bowl. I find these datasets interesting because I am a huge fan of the NFL and I think that I will be able to find many interesting points within these two datasets.
+### 1) Introduction: 
+
+###### The two datasets that I have chosen to use are both from the National Football League (NFL). One of which has attendance data for each football teams from 2000-2019 and the other dataset has standings statistics for each football teams from 2000-2019. I acquired these two datasets through the website github.com. The variables that are within the attendance dataset are team, team name, year, total overall attendance for the year, total home attendance for the year, total away attendance for the year, the week of the season, and attendance for that week whether it was home or away. The variables that are within the standings dataset are team, team name, year, wins for that year, losses for that year, total points scored that year, total points allowed that year, the points differential (points scored – points allowed), margin of victory (points differential/games played), strength of schedule, simple rating, offensive ranking, defensive ranking, if the team made the playoffs, if the team won the Super Bowl. I find these datasets interesting because I am a huge fan of the NFL and I think that I will be able to find many interesting points within these two datasets.
 
 ```{r}
 library(tidyverse)
@@ -31,12 +32,13 @@ standings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
 ```
 
 
-## 2) Untidying then Tidying
+### 2) Untidying then Tidying
 
->Since both of these datasets were already tidy, the following two sets of code use `pivot_longer` and `pivot_wider`to untidy then make the two datasets tidy again. 
+###### Since both of these datasets were already tidy, the following two sets of code use `pivot_longer` and `pivot_wider`to untidy then make the two datasets tidy again. 
 
-### 2a) Standings dataset
->For this dataset, I used `pivot_longer` to move the data from playoffs column and sb_winner column to a new column called "name" and moved the values within each of the playoffs and sb_winner columns to a column called "value." Then, I used `pivot_wider` to move the values in the "name" column back to their own columns and moved the values within "value" column back to the playoffs and sb_winner columns. 
+##### 2a) Standings dataset
+
+###### For this dataset, I used `pivot_longer` to move the data from playoffs column and sb_winner column to a new column called "name" and moved the values within each of the playoffs and sb_winner columns to a column called "value." Then, I used `pivot_wider` to move the values in the "name" column back to their own columns and moved the values within "value" column back to the playoffs and sb_winner columns. 
 
 ```{r}
 nflstand<-standings%>%
@@ -48,8 +50,9 @@ newnflstand<-nflstand%>%
               values_from = 'value')
 ```
   
-### 2b) Attendance dataset
->For this dataset, I used `pivot_longer` to move the data from the total attendance, home attendance, away attendance, and weekly attendance columns to a new column called "name" and moved the values within each of these columns to a column called "value." Then, I used `pivot_wider` to move the values in the "name" column back to their own columns and moved the values within "value" column back to the total attendance, home/away attendance, and weekly attendance columns. 
+##### 2b) Attendance dataset
+
+###### For this dataset, I used `pivot_longer` to move the data from the total attendance, home attendance, away attendance, and weekly attendance columns to a new column called "name" and moved the values within each of these columns to a column called "value." Then, I used `pivot_wider` to move the values in the "name" column back to their own columns and moved the values within "value" column back to the total attendance, home/away attendance, and weekly attendance columns. 
 
 ```{r}
 nflatt<-attendance%>%
@@ -62,10 +65,11 @@ newnflatt<-nflatt%>%
 ```
 
 
-## 2c) Joining both of the datasets
->The type of join that I used was a `left_join` to join the standings dataset and the attendance dataset. This type of join keeps everything in the standings dataset but combines the statistics within the attendance dataset by team.  
+##### 2c) Joining both of the datasets
 
->In the attendance dataset, I chose to drop the weekly attendance and weeks that were originally in the attendance dataset since in the standings dataset everything is separated by season. 
+###### The type of join that I used was a `left_join` to join the standings dataset and the attendance dataset. This type of join keeps everything in the standings dataset but combines the statistics within the attendance dataset by team.  
+
+###### In the attendance dataset, I chose to drop the weekly attendance and weeks that were originally in the attendance dataset since in the standings dataset everything is separated by season. 
 
 ```{r}
 boomatt<-newnflatt%>%
@@ -74,7 +78,7 @@ boomatt<-newnflatt%>%
   distinct(total,.keep_all = TRUE)
 ```
 
->In the standings dataset, I chose to drop the strength of schedule and simple rating because both of those statistics are calculated by using the points_scored and points_allowed which I have already included. 
+###### In the standings dataset, I chose to drop the strength of schedule and simple rating because both of those statistics are calculated by using the points_scored and points_allowed which I have already included. 
 
 ```{r}
 boomstand<-newnflstand%>%
@@ -84,9 +88,9 @@ boomfull<-left_join(boomstand, boomatt)
 ```
 
 
-## 3) Create summary stats using `filter`, `select`, `arrange`, `mutate` with each stat using `group_by` and `summarize`
+### 3) Create summary stats using `filter`, `select`, `arrange`, `mutate` with each stat using `group_by` and `summarize`
 
-### 3.1) Which team/teams has the most wins?
+#### 3.1) Which team/teams has the most wins?
 ```{r}
 boomfull%>%
   group_by(team)%>%
@@ -94,7 +98,7 @@ boomfull%>%
   arrange(desc(totwins))
 ```
 
-### 3.2) How many teams in the top 5th percentile of total attendance have won the superbowl?  
+#### 3.2) How many teams in the top 5th percentile of total attendance have won the superbowl?  
 ```{r}
 boomfull%>%
   mutate(total_ptile=ntile(total, 100))%>%
@@ -102,7 +106,7 @@ boomfull%>%
   select(team, year)
 ```
 
-### 3.3) Which team has won the least amount of games and won the superbowl? 
+#### 3.3) Which team has won the least amount of games and won the superbowl? 
 ```{r}
 boomfull%>%
   filter(sb_winner=='Won Superbowl')%>%
@@ -111,7 +115,7 @@ boomfull%>%
   arrange(max_wins)
 ```
 
-### 3.4) Which year has the highest total attendance? 
+#### 3.4) Which year has the highest total attendance? 
 ```{r}
 boomfull%>%
   group_by(year)%>%
@@ -119,7 +123,7 @@ boomfull%>%
   arrange(desc(yearly_total))
 ```
 
-### 3.5) Which superbowl winning team had the highest total attendance throughtout the season?
+#### 3.5) Which superbowl winning team had the highest total attendance throughtout the season?
 ```{r}
 boomfull%>%
   filter(sb_winner=='Won Superbowl')%>%
@@ -128,14 +132,14 @@ boomfull%>%
   arrange(desc(total_att))
 ```
 
-### 3.6) Correlation points scored and points allowed vs. Off. ranking and Def. ranking
+#### 3.6) Correlation points scored and points allowed vs. Off. ranking and Def. ranking
 ```{r}
 boomfull%>%
   select(points_for, points_against, offensive_ranking, defensive_ranking)%>%
   cor()
 ```
 
-### 3.7) Which team has scored the most points from 2000-2019? 
+#### 3.7) Which team has scored the most points from 2000-2019? 
 ```{r}
 boomfull%>%
   group_by(team)%>%
@@ -143,7 +147,7 @@ boomfull%>%
   arrange(desc(tot_points))
 ```
 
-### 3.8) Teams who have won the superbowl and how many playoff appearances they have?
+#### 3.8) Teams who have won the superbowl and how many playoff appearances they have?
 ```{r}
 play<-boomfull%>%
   filter(playoffs=='Playoffs')%>%
@@ -161,7 +165,7 @@ inner_join(sb, play)%>%
   arrange(desc(tot_playoff))
 ```
 
-### 3.9) Correlation between points allowed, points scored, playoffs, and superbowl? 
+#### 3.9) Correlation between points allowed, points scored, playoffs, and superbowl? 
 ```{r}
 boom3.9<-boomfull%>%
   mutate(playoffs=case_when(playoffs=='Playoffs'~'1', playoffs=='No Playoffs'~ '0', TRUE~playoffs), playoffs=as.numeric(playoffs))%>%
@@ -172,7 +176,7 @@ boom3.9%>%
   cor()
 ```
 
-### 3.10) Correlation between margin of victory and playoff and superbowl 
+#### 3.10) Correlation between margin of victory and playoff and superbowl 
 ```{r}
 boom3.10<-boomfull%>%
   mutate(playoffs=case_when(playoffs=='Playoffs'~'1', playoffs=='No Playoffs'~ '0', TRUE~playoffs), playoffs=as.numeric(playoffs))%>%
@@ -184,9 +188,9 @@ boom3.10%>%
 ```
 
 
-## 4) Visiualizing
+### 4) Visiualizing
 
-### 4.1) Correlation matrix heatmap between numeric variables
+#### 4.1) Correlation matrix heatmap between numeric variables
 
 ```{r}
 vis1<-boomfull%>%select(-team,-playoffs,-sb_winner, -total, -home, -away)%>%cor()
@@ -197,8 +201,7 @@ ggcorr(vis1)
 
 ```
 
-### 4.2) 
->This scatterplot has the total away attendance for each season on the y-axis, the total home attendance for each season on the x-axis, and each color on the scatterplot correlates to each team which is labeled at the top of the plot. 
+#### 4.2) This scatterplot has the total away attendance for each season on the y-axis, the total home attendance for each season on the x-axis, and each color on the scatterplot correlates to each team which is labeled at the top of the plot. 
 
 ```{r}
 ggplot(boomfull, aes(x=home, y=away, color=team))+
@@ -213,8 +216,7 @@ ggplot(boomfull, aes(x=home, y=away, color=team))+
 
 *Findings from this scatterplot show that the Dallas Cowboys have the highest total home attendance, no shock there. I also thought it was interesting that there are certain teams with outlier home attendance numbers while some teams had outlier away attendance numbers.*
 
-### 4.3) 
->This barplot shows the relationship between the mean wins over each season and if the teams made the playoffs or not. The blue bars are the mean wins if the team made the playoffs while the red bars show the mean wins if the team missed the playoffs.
+#### 4.3) This barplot shows the relationship between the mean wins over each season and if the teams made the playoffs or not. The blue bars are the mean wins if the team made the playoffs while the red bars show the mean wins if the team missed the playoffs.
 
 ```{r}
 ggplot(boomfull, aes(x=team, y=wins, fill=playoffs))+
@@ -229,7 +231,7 @@ ggplot(boomfull, aes(x=team, y=wins, fill=playoffs))+
 *Some interesting findings from this plot show that both of the Los Angeles teams, the Rams and Chargers, had the most wins in their missed playoffs seasons. Another finding is that there is a clear wins difference between teams that made the playoffs that season and if they did not.*
 
 
-## 5) Dimensionality Reduction
+### 5) Dimensionality Reduction
 ```{r}
 library(cluster)
 nfl<-boomfull%>%select(-team,-playoffs,-sb_winner)%>%mutate_if(is.character, as.factor)
